@@ -92,9 +92,23 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     //this->addChild(sprite, 0);
 	
+	//Player Init
 	Player = new Character();
 	Player->Init(R_BLUEGEM, R_REDGEM, R_GREENGEM, R_PURPLEGEM, R_WHITEGEM, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
-	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
+	this->addChild(Player->GetCharCurrentSprite().getSprite(),1);
+
+	//Tilemap Init
+	CCTMXTiledMap* map = new CCTMXTiledMap();
+	map->initWithTMXFile(TilemapFileName[T_TEST]);
+	CCTMXLayer* layer = map->layerNamed("Test");
+
+	this->addChild(map,0);
+	//Set Tiles anti-aliased
+	for (const auto& child : map->getChildren())
+	{
+		static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
+	}
+
 
 	auto keyboardListener = EventListenerKeyboard::create();
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::keyPressed, this);
