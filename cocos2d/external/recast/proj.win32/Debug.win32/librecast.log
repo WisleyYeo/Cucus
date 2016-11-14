@@ -1,19 +1,9 @@
-﻿  DebugDraw.cpp
-  DetourDebugDraw.cpp
-  DetourCrowd.cpp
-  DetourLocalBoundary.cpp
-  DetourObstacleAvoidance.cpp
-  DetourPathCorridor.cpp
-  DetourPathQueue.cpp
-..\DetourCrowd\DetourObstacleAvoidance.cpp(334): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  DetourProximityGrid.cpp
-  DetourTileCache.cpp
-  DetourTileCacheBuilder.cpp
-  DetourAlloc.cpp
-  DetourCommon.cpp
-  DetourNavMesh.cpp
-  DetourNavMeshBuilder.cpp
-  DetourNavMeshQuery.cpp
-  DetourNode.cpp
-  fastlz.c
-  librecast.vcxproj -> C:\Users\Wisley\Desktop\cocos2d-x-3.13.1\~\Documents\Projects\cocos2d\Framework\proj.win32\Debug.win32\librecast.lib
+﻿Build started 14/11/2016 4:30:41 PM.
+     1>Project "C:\Users\Jaron\Desktop\Cucus\cocos2d\external\recast\proj.win32\librecast.vcxproj" on node 5 (Build target(s)).
+     1>Lib:
+         librecast.vcxproj -> C:\Users\Jaron\Desktop\Cucus\proj.win32\Debug.win32\librecast.lib
+     1>Done Building Project "C:\Users\Jaron\Desktop\Cucus\cocos2d\external\recast\proj.win32\librecast.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.26
