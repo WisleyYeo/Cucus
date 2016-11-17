@@ -4,6 +4,9 @@
 USING_NS_CC;
 HelloWorld::HelloWorld()
 {
+	Player = NULL;
+	map = NULL;
+	collidablelayer = NULL;
 }
 Scene* HelloWorld::createScene()
 {
@@ -98,9 +101,9 @@ bool HelloWorld::init()
 	this->addChild(Player->GetCharCurrentSprite().getSprite(),1);
 
 	//Tilemap Init
-	CCTMXTiledMap* map = new CCTMXTiledMap();
+	map = new CCTMXTiledMap();
 	map->initWithTMXFile(TilemapFileName[T_TEST]);
-	CCTMXLayer* layer = map->layerNamed("Test");
+	collidablelayer = map->layerNamed("Collidable");
 
 	this->addChild(map,0);
 	//Set Tiles anti-aliased
@@ -108,8 +111,6 @@ bool HelloWorld::init()
 	{
 		static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
 	}
-
-
 	auto keyboardListener = EventListenerKeyboard::create();
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::keyPressed, this);
 	keyboardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::keyReleased, this);
@@ -160,6 +161,29 @@ void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 void HelloWorld::update(float dt)
 {
 	Player->update(dt);
+
+	//Collision Check Player Against other entities
+	Size s = collidablelayer->getLayerSize();
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				if (collidablelayer->tileGIDAt(Vec2(x, y)) > 0)
+				{
+					//Something wrong with boundingbox
+
+					if (Player->CollisionCheck(collidablelayer->getTileAt(Vec2(x, y))->getBoundingBox()))
+					{
+						//If Collision Check returns true
+						unsigned int GID = collidablelayer->tileGIDAt(Vec2(x, y));
+						Player->CharCurrentState = Character::C_DOWN;
+					}
+				}
+			}
+		}
+	}
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -213,5 +237,14 @@ void HelloWorld::onMouseScroll(cocos2d::Event*)
 
 HelloWorld::~HelloWorld()
 {
-	
+	if (Player)
+	{
+		delete Player;
+		Player = NULL;
+	}
+	if (map)
+	{
+		delete map;
+		map = NULL;
+	}
 }

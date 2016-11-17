@@ -20,7 +20,12 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 
+	//Player
 	Character *Player;
+	//Tilemap
+	cocos2d::CCTMXTiledMap *map;
+	cocos2d::CCTMXLayer *collidablelayer;
+
 
 	virtual void update(float);
 

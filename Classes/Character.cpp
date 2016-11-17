@@ -21,6 +21,7 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 	CharacterCurrentSprite = new SpriteManager();
 	CharacterCurrentSprite->Init(CharacterIdleSprite, x, y, true);
 	CharCurrentState = C_IDLE;
+	
 
 }
 
@@ -50,6 +51,13 @@ void Character::update(float dt)
 SpriteManager Character::GetCharCurrentSprite(void)
 {
 	return *CharacterCurrentSprite;
+}
+bool Character::CollisionCheck(cocos2d::Rect checkAgainst)
+{
+	if (this->GetCharCurrentSprite().getSprite()->getBoundingBox().intersectsRect(checkAgainst))
+	{
+		return true;
+	}
 }
 Character::~Character()
 {

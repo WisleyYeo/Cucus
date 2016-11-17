@@ -23,6 +23,7 @@ public:
 	RESOURCES CharacterMoveRightSprite;
 	void Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite, 
 		RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite,USHORT x, USHORT y);
+	bool CollisionCheck(cocos2d::Rect checkAgainst);
 	SpriteManager GetCharCurrentSprite(void);
 
 	//Character Update
