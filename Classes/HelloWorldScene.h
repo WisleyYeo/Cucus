@@ -10,26 +10,17 @@ class HelloWorld : public cocos2d::Layer
 public:
 	HelloWorld();
 	~HelloWorld();
+
+	CREATE_FUNC(HelloWorld);
     static cocos2d::Scene* createScene();
 
     virtual bool init();
+	void InitInputEvents();
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
-
-	//Player
-	Character *Player;
-	//Tilemap
-	cocos2d::CCTMXTiledMap *map;
-	cocos2d::CCTMXLayer *collidablelayer;
-
-
 	virtual void update(float);
-
-
 
 	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event *event);
 	void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event *event);
@@ -42,6 +33,14 @@ public:
 
 	void keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
 	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
+
+private:
+	//Player
+	Character *Player;
+
+	//Tilemap
+	cocos2d::CCTMXTiledMap *map;
+	cocos2d::CCTMXLayer *collidablelayer;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

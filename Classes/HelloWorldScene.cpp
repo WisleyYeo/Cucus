@@ -37,106 +37,78 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->setSwallowTouches(true);
-	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
-	listener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
-	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
-	auto mouseListener = EventListenerMouse::create();
-	mouseListener->onMouseMove = CC_CALLBACK_1(HelloWorld::onMouseMove,
-		this);
-	mouseListener->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
-	mouseListener->onMouseDown = CC_CALLBACK_1(HelloWorld::onMouseDown,
-		this);
-	mouseListener->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll,
-		this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
     // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+    auto closeItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
     
-    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + visibleSize.height - closeItem->getContentSize().height/2));
+    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 , origin.y + visibleSize.height - closeItem->getContentSize().height/2));
 
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    //auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    //label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                          //  origin.y + visibleSize.height - label->getContentSize().height));
-
-    // add the label as a child to this layer
-    //this->addChild(label, 1);
-
-    // add "HelloWorld" splash screen"
-    //auto sprite = Sprite::create("HelloWorld.png");
-
-    // position the sprite on the center of the screen
-    //sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-    // add the sprite as a child to this layer
-    //this->addChild(sprite, 0);
-	
 	//Player Init
 	Player = new Character();
 	Player->Init(R_BLUEGEM, R_REDGEM, R_GREENGEM, R_PURPLEGEM, R_WHITEGEM, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(),1);
 
-	//Tilemap Init
-	map = new CCTMXTiledMap();
-	map->initWithTMXFile(TilemapFileName[T_TEST]);
-	collidablelayer = map->layerNamed("Collidable");
+	////Tilemap Init
+	//map = new CCTMXTiledMap();
+	//map->initWithTMXFile(TilemapFileName[T_TEST]);
+	//collidablelayer = map->layerNamed("Collidable");
 
-	this->addChild(map,0);
-	//Set Tiles anti-aliased
-	for (const auto& child : map->getChildren())
-	{
-		static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
-	}
-	auto keyboardListener = EventListenerKeyboard::create();
-	keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::keyPressed, this);
-	keyboardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::keyReleased, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+	//this->addChild(map,0);
+	////Set Tiles anti-aliased
+	//for (const auto& child : map->getChildren())
+	//{
+	//	static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
+	//}
+	InitInputEvents();
 
 	this->scheduleUpdate();
 
     return true;
 }
+
+void HelloWorld::InitInputEvents()
+{
+	auto keyboardListener = EventListenerKeyboard::create();
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::keyPressed, this);
+	keyboardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::keyReleased, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener->setSwallowTouches(true);
+	touchListener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+	touchListener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
+	touchListener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+
+	auto mouseListener = EventListenerMouse::create();
+	mouseListener->onMouseMove = CC_CALLBACK_1(HelloWorld::onMouseMove, this);
+	mouseListener->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
+	mouseListener->onMouseDown = CC_CALLBACK_1(HelloWorld::onMouseDown, this);
+	mouseListener->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+}
+
 void HelloWorld::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_W)
 	{
-		Player->CharCurrentState = Character::C_UP;
+		Player->CharCurrentState = Character::C_WALK_UP;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_S)
 	{
-		Player->CharCurrentState = Character::C_DOWN;
+		Player->CharCurrentState = Character::C_WALK_DOWN;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_A)
 	{
-		Player->CharCurrentState = Character::C_LEFT;
+		Player->CharCurrentState = Character::C_WALK_LEFT;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_D)
 	{
-		Player->CharCurrentState = Character::C_RIGHT;
+		Player->CharCurrentState = Character::C_WALK_RIGHT;
 	}
 }
 void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
@@ -162,28 +134,28 @@ void HelloWorld::update(float dt)
 {
 	Player->update(dt);
 
-	//Collision Check Player Against other entities
-	Size s = collidablelayer->getLayerSize();
-	if (s.width > 0 && s.height > 0)
-	{
-		for (int x = 0; x < s.width; ++x)
-		{
-			for (int y = 0; y < s.height; ++y)
-			{
-				if (collidablelayer->tileGIDAt(Vec2(x, y)) > 0)
-				{
-					//Something wrong with boundingbox
+	////Collision Check Player Against other entities
+	//Size s = collidablelayer->getLayerSize();
+	//if (s.width > 0 && s.height > 0)
+	//{
+	//	for (int x = 0; x < s.width; ++x)
+	//	{
+	//		for (int y = 0; y < s.height; ++y)
+	//		{
+	//			if (collidablelayer->tileGIDAt(Vec2(x, y)) > 0)
+	//			{
+	//				//Something wrong with boundingbox
 
-					if (Player->CollisionCheck(collidablelayer->getTileAt(Vec2(x, y))->getBoundingBox()))
-					{
-						//If Collision Check returns true
-						unsigned int GID = collidablelayer->tileGIDAt(Vec2(x, y));
-						Player->CharCurrentState = Character::C_DOWN;
-					}
-				}
-			}
-		}
-	}
+	//				if (Player->CollisionCheck(collidablelayer->getTileAt(Vec2(x, y))->getBoundingBox()))
+	//				{
+	//					//If Collision Check returns true
+	//					unsigned int GID = collidablelayer->tileGIDAt(Vec2(x, y));
+	//					Player->CharCurrentState = Character::C_WALK_DOWN;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -197,9 +169,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
     
     //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-    
-    
+    //_eventDispatcher->dispatchEvent(&customEndEvent);   
 }
 
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event *event)
@@ -224,10 +194,7 @@ void HelloWorld::onMouseUp(cocos2d::Event*)
 }
 void HelloWorld::onMouseDown(cocos2d::Event* event)
 {
-	EventMouse *e = (EventMouse*)event;
-	cocos2d::Vec2 touchPoint;
-	touchPoint.x = e->getCursorX();
-	touchPoint.y = e->getCursorY();
+
 }
 void HelloWorld::onMouseScroll(cocos2d::Event*)
 {
