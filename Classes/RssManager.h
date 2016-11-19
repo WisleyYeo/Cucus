@@ -3,14 +3,14 @@
 #include <vector>
 
 enum RESOURCES {
-	R_BLUEGEM,
-	R_REDGEM,
-	R_GREENGEM,
-	R_PURPLEGEM,
-	R_WHITEGEM,
+	R_SOLDIERIDLE,
+	R_SOLDIERUP,
+	R_SOLDIERDOWN,
+	R_SOLDIERLEFT,
+	R_SOLDIERRIGHT,
 	R_TOTAL
 };
-static const char* const ResourceFileName[R_TOTAL] = { "blue.png", "red.png", "green.png", "purple.png", "white.png" };
+static const char* const ResourceFileName[R_TOTAL] = { "Characters/SoldierIdle.png", "Characters/SoldierUp.png", "Characters/SoldierDown.png", "Characters/SoldierLeft.png", "Characters/SoldierRight.png" };
 class RssManager
 {
 	

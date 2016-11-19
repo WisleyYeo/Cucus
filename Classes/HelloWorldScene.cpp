@@ -49,7 +49,7 @@ bool HelloWorld::init()
 
 	//Player Init
 	Player = new Character();
-	Player->Init(R_BLUEGEM, R_REDGEM, R_GREENGEM, R_PURPLEGEM, R_WHITEGEM, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
+	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
 
 	//Tilemap Init
