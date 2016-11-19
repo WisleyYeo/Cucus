@@ -57,11 +57,30 @@ SpriteManager Character::GetCharCurrentSprite(void)
 {
 	return *CharacterCurrentSprite;
 }
-bool Character::CollisionCheck(cocos2d::Rect checkAgainst)
+void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 {
-	if (this->GetCharCurrentSprite().getSprite()->getBoundingBox().intersectsRect(checkAgainst))
+	//Collision Check Player Against other entities
+	Size s = TileLayer->getLayerSize();
+	Vec2 TilePosition = Vec2(0, 0);
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
 	{
-		return true;
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = TileLayer->getTileGIDAt(Vec2(x, y));
+				if (GID > 0)
+				{
+					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharacterCurrentSprite->getSprite()->getBoundingBox()))
+					{
+						//If Collision Check returns true
+						CharCurrentState = C_IDLE;
+					}
+				}
+			}
+		}
 	}
 }
 

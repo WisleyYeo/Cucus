@@ -24,7 +24,7 @@ public:
 	//Character Update
 	virtual void update(float);
 
-	bool CollisionCheck(cocos2d::Rect checkAgainst);
+	void CollisionCheck(cocos2d::CCTMXLayer *TileLayer);
 	SpriteManager GetCharCurrentSprite(void);
 
 	void Walk(Vec2 dir);

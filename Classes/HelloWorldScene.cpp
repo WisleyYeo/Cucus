@@ -50,19 +50,21 @@ bool HelloWorld::init()
 	//Player Init
 	Player = new Character();
 	Player->Init(R_BLUEGEM, R_REDGEM, R_GREENGEM, R_PURPLEGEM, R_WHITEGEM, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
-	this->addChild(Player->GetCharCurrentSprite().getSprite(),1);
+	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
 
-	////Tilemap Init
-	//map = new CCTMXTiledMap();
-	//map->initWithTMXFile(TilemapFileName[T_TEST]);
-	//collidablelayer = map->layerNamed("Collidable");
+	//Tilemap Init
+	map = new CCTMXTiledMap();
+	map->initWithTMXFile(TilemapFileName[T_TEST]);
+	collidablelayer = map->layerNamed("Collidable");
+	//Set Tiles anti-aliased
+	for (const auto& child : map->getChildren())
+	{
+		static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
+	}
+	this->addChild(map,0);
+	
+	//collidablelayer->removeTileAt(Vec2(0, 0));
 
-	//this->addChild(map,0);
-	////Set Tiles anti-aliased
-	//for (const auto& child : map->getChildren())
-	//{
-	//	static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
-	//}
 	InitInputEvents();
 
 	this->scheduleUpdate();
@@ -133,29 +135,8 @@ void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 void HelloWorld::update(float dt)
 {
 	Player->update(dt);
-
-	////Collision Check Player Against other entities
-	//Size s = collidablelayer->getLayerSize();
-	//if (s.width > 0 && s.height > 0)
-	//{
-	//	for (int x = 0; x < s.width; ++x)
-	//	{
-	//		for (int y = 0; y < s.height; ++y)
-	//		{
-	//			if (collidablelayer->tileGIDAt(Vec2(x, y)) > 0)
-	//			{
-	//				//Something wrong with boundingbox
-
-	//				if (Player->CollisionCheck(collidablelayer->getTileAt(Vec2(x, y))->getBoundingBox()))
-	//				{
-	//					//If Collision Check returns true
-	//					unsigned int GID = collidablelayer->tileGIDAt(Vec2(x, y));
-	//					Player->CharCurrentState = Character::C_WALK_DOWN;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+	Player->CollisionCheck(collidablelayer);
+	
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
