@@ -1,6 +1,6 @@
 #pragma once
 #include "SpriteManager.h"
-
+#include <cmath>
 USING_NS_CC;
 
 class Character
@@ -16,6 +16,12 @@ public:
 		C_TOTALSTATES
 	};
 	int CharCurrentState;
+	
+	//Character Collision Checks
+	bool CollidedUp;
+	bool CollidedDown;
+	bool CollidedLeft;
+	bool CollidedRight;
 
 	Character();
 	~Character();

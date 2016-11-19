@@ -24,6 +24,10 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 	CharacterCurrentSprite = new SpriteManager();
 	CharacterCurrentSprite->Init(CharacterIdleSprite, x, y, true);
 	CharCurrentState = C_IDLE;
+	CollidedUp = false;
+	CollidedDown = false;
+	CollidedLeft = false;
+	CollidedRight = false;
 }
 
 void Character::update(float dt)
@@ -36,20 +40,32 @@ void Character::update(float dt)
 		CharacterCurrentSprite->ChangeTexture(CharacterIdleSprite);
 		break;
 	case C_WALK_UP:
-		CharacterCurrentSprite->ChangeTexture(CharacterMoveUpSprite);
-		Walk(Vec2(0, 1));
+		if (!CollidedUp)
+		{
+			CharacterCurrentSprite->ChangeTexture(CharacterMoveUpSprite);
+			Walk(Vec2(0, 1));
+		}
 		break;
 	case C_WALK_DOWN:
-		CharacterCurrentSprite->ChangeTexture(CharacterMoveDownSprite);
-		Walk(Vec2(0, -1));
+		if (!CollidedDown)
+		{
+			CharacterCurrentSprite->ChangeTexture(CharacterMoveDownSprite);
+			Walk(Vec2(0, -1));
+		}
 		break;
 	case C_WALK_LEFT:
-		CharacterCurrentSprite->ChangeTexture(CharacterMoveLeftSprite);
-		Walk(Vec2(-1, 0));
+		if (!CollidedLeft)
+		{
+			CharacterCurrentSprite->ChangeTexture(CharacterMoveLeftSprite);
+			Walk(Vec2(-1, 0));
+		}
 		break;
 	case C_WALK_RIGHT:
-		CharacterCurrentSprite->ChangeTexture(CharacterMoveRightSprite);
-		Walk(Vec2(1,0));
+		if (!CollidedRight)
+		{
+			CharacterCurrentSprite->ChangeTexture(CharacterMoveRightSprite);
+			Walk(Vec2(1, 0));
+		}
 		break;
 	}
 }
@@ -59,6 +75,11 @@ SpriteManager Character::GetCharCurrentSprite(void)
 }
 void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 {
+	//Reset to false to allow movement
+	CollidedUp = false;
+	CollidedDown = false;
+	CollidedLeft = false;
+	CollidedRight = false;
 	//Collision Check Player Against other entities
 	Size s = TileLayer->getLayerSize();
 	Vec2 TilePosition = Vec2(0, 0);
@@ -73,10 +94,45 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 				if (GID > 0)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
-					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharacterCurrentSprite->getSprite()->getBoundingBox()))
+					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
-						//If Collision Check returns true
-						CharCurrentState = C_IDLE;
+						float TilePosX = TileLayer->getTileAt(Vec2(x, y))->getPositionX() + TileLayer->getTileAt(Vec2(x, y))->getContentSize().width * 0.5f;
+						float TilePosY = TileLayer->getTileAt(Vec2(x, y))->getPositionY() + TileLayer->getTileAt(Vec2(x, y))->getContentSize().height * 0.5f;
+						float CharPosX = CharacterCurrentSprite->getSprite()->getPositionX();
+						float CharPosY = CharacterCurrentSprite->getSprite()->getPositionY();
+						float TileSize = TileLayer->getTileAt(Vec2(x, y))->getContentSize().height;
+						float CharSize = CharacterCurrentSprite->getSprite()->getContentSize().height;
+						float Comparison = CharSize * 0.5f + TileSize * 0.5f;
+						float offset = 5.0f;
+						float DifferenceX = abs(TilePosX - CharPosX) + offset;
+						float DifferenceY = abs(TilePosY - CharPosY) + offset;
+						//If Player is within Tile's Bounding Box, Check where Tile is relative to player
+						if (TilePosX < CharPosX &&
+							DifferenceY < Comparison)
+						{
+							//Tile is on the left
+							CollidedLeft = true;
+
+						}
+						if (TilePosX > CharPosX	&&
+							DifferenceY < Comparison)
+						{
+							//Tile is on the right
+							CollidedRight = true;
+						}
+						if (TilePosY < CharPosY &&
+							DifferenceX < Comparison)
+						{
+							//Tile is below
+							CollidedDown = true;
+						}
+						if (TilePosY > CharPosY &&
+							DifferenceX < Comparison)
+						{
+							//Tile is on top
+							CollidedUp = true;
+						}
 					}
 				}
 			}
