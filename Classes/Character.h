@@ -34,8 +34,8 @@ public:
 	SpriteManager GetCharCurrentSprite(void);
 
 	void Walk(Vec2 dir);
-
-	
+	void BoolChecker();
+	bool IsMoving(){ return isMoving; };
 
 private:
 	SpriteManager *CharacterCurrentSprite;
@@ -45,7 +45,7 @@ private:
 	RESOURCES CharacterMoveLeftSprite;
 	RESOURCES CharacterMoveRightSprite;
 
-	Vec2 position;
-	
+	Vec2 position;	
+	bool isMoving;
 };
 

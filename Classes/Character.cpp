@@ -12,9 +12,7 @@ Character::~Character()
 
 void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite, RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite, USHORT x, USHORT y)
 {
-	position = Vec2(x,y);
-
-	//Character state sprite init
+		//Character state sprite init
 	CharacterIdleSprite = CharIdleSprite;
 	CharacterMoveUpSprite = CharMoveUpSprite;
 	CharacterMoveDownSprite = CharMoveDownSprite;
@@ -28,11 +26,15 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 	CollidedDown = false;
 	CollidedLeft = false;
 	CollidedRight = false;
+
+	position = Vec2(x, y);
+	isMoving = false;
 }
 
 void Character::update(float dt)
 {
 	CharacterCurrentSprite->Render(position.x, position.y);
+	BoolChecker();
 
 	switch (CharCurrentState)
 	{
@@ -142,5 +144,16 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 
 void Character::Walk(Vec2 dir)
 {
+	isMoving = true;
 	position += 2 * dir;
+}
+void Character::BoolChecker()
+{
+	if (CharCurrentState != C_WALK_UP ||
+		CharCurrentState != C_WALK_DOWN ||
+		CharCurrentState != C_WALK_LEFT ||
+		CharCurrentState != C_WALK_RIGHT) 
+	{
+		isMoving = false;
+	}
 }

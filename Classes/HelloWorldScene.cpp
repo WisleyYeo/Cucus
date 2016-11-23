@@ -94,49 +94,10 @@ void HelloWorld::InitInputEvents()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 }
 
-void HelloWorld::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
-{
-	if (keyCode == EventKeyboard::KeyCode::KEY_W)
-	{
-		Player->CharCurrentState = Character::C_WALK_UP;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_S)
-	{
-		Player->CharCurrentState = Character::C_WALK_DOWN;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_A)
-	{
-		Player->CharCurrentState = Character::C_WALK_LEFT;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_D)
-	{
-		Player->CharCurrentState = Character::C_WALK_RIGHT;
-	}
-}
-void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
-{
-	if (keyCode == EventKeyboard::KeyCode::KEY_W)
-	{
-		Player->CharCurrentState = Character::C_IDLE;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_S)
-	{
-		Player->CharCurrentState = Character::C_IDLE;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_A)
-	{
-		Player->CharCurrentState = Character::C_IDLE;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_D)
-	{
-		Player->CharCurrentState = Character::C_IDLE;
-	}
-}
 void HelloWorld::update(float dt)
 {
 	Player->update(dt);
-	Player->CollisionCheck(collidablelayer);
-	
+	Player->CollisionCheck(collidablelayer);	
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -151,6 +112,45 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);   
+}
+
+void HelloWorld::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_W)
+	{
+		Player->CharCurrentState = Character::C_WALK_UP;
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_S)
+	{
+		Player->CharCurrentState = Character::C_WALK_DOWN;
+	}
+	else if(keyCode == EventKeyboard::KeyCode::KEY_A)
+	{
+		Player->CharCurrentState = Character::C_WALK_LEFT;
+	}
+	else if(keyCode == EventKeyboard::KeyCode::KEY_D)
+	{
+		Player->CharCurrentState = Character::C_WALK_RIGHT;
+	}
+}
+void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_W && Player->IsMoving())
+	{
+		Player->CharCurrentState = Character::C_IDLE;
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_S && Player->IsMoving())
+	{
+		Player->CharCurrentState = Character::C_IDLE;
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_A && Player->IsMoving())
+	{
+		Player->CharCurrentState = Character::C_IDLE;
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_D && Player->IsMoving())
+	{
+		Player->CharCurrentState = Character::C_IDLE;
+	}
 }
 
 bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event *event)
@@ -192,7 +192,6 @@ HelloWorld::~HelloWorld()
 	}
 	if (map)
 	{
-		delete map;
 		map = NULL;
 	}
 }
