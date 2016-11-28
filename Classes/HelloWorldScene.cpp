@@ -5,8 +5,7 @@ USING_NS_CC;
 HelloWorld::HelloWorld()
 {
 	Player = NULL;
-	map = NULL;
-	collidablelayer = NULL;
+	//collectablelayer = NULL;
 }
 Scene* HelloWorld::createScene()
 {
@@ -49,21 +48,20 @@ bool HelloWorld::init()
 
 	//Player Init
 	Player = new Character();
-	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2);
+	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2, 100, 1, 1);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
 
 	//Tilemap Init
-	map = new CCTMXTiledMap();
-	map->initWithTMXFile(TilemapFileName[T_TEST]);
-	collidablelayer = map->layerNamed("Collidable");
-	//Set Tiles anti-aliased
-	for (const auto& child : map->getChildren())
-	{
-		static_cast<SpriteBatchNode*>(child)->getTexture()->setAntiAliasTexParameters();
-	}
-	this->addChild(map,0);
-	
-	//collidablelayer->removeTileAt(Vec2(0, 0));
+	//Level 1
+	level1collidemap = new CCTMXTiledMap();
+	level1collidemap->initWithTMXFile(TilemapFileName[L1_COLLIDE]);
+	level1collidelayer = level1collidemap->layerNamed("Layer");
+	this->addChild(level1collidemap,0);
+	level1collectmap = new CCTMXTiledMap();
+	level1collectmap->initWithTMXFile(TilemapFileName[L1_COLLECT]);
+	level1collectlayer = level1collectmap->layerNamed("Layer");
+	this->addChild(level1collectmap, 0);
+
 
 	InitInputEvents();
 
@@ -97,7 +95,9 @@ void HelloWorld::InitInputEvents()
 void HelloWorld::update(float dt)
 {
 	Player->update(dt);
-	Player->CollisionCheck(collidablelayer);	
+	Player->CollisionCheck(level1collidelayer);	
+	Player->CollectionCheck(level1collectlayer);
+	
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -189,9 +189,5 @@ HelloWorld::~HelloWorld()
 	{
 		delete Player;
 		Player = NULL;
-	}
-	if (map)
-	{
-		map = NULL;
 	}
 }

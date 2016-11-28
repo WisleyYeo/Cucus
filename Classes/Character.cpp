@@ -10,9 +10,9 @@ Character::~Character()
 {
 }
 
-void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite, RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite, USHORT x, USHORT y)
+void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite, RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite, USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed)
 {
-		//Character state sprite init
+	//Character state sprite init
 	CharacterIdleSprite = CharIdleSprite;
 	CharacterMoveUpSprite = CharMoveUpSprite;
 	CharacterMoveDownSprite = CharMoveDownSprite;
@@ -29,6 +29,12 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 
 	position = Vec2(x, y);
 	isMoving = false;
+
+	//Character Attributes init
+	Health = CharHealth;
+	Strength = CharStrength;
+	Speed = CharSpeed;
+
 }
 
 void Character::update(float dt)
@@ -95,6 +101,7 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 				GID = TileLayer->getTileGIDAt(Vec2(x, y));
 				if (GID > 0)
 				{
+					
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
 					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
@@ -135,6 +142,34 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 							//Tile is on top
 							CollidedUp = true;
 						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void Character::CollectionCheck(cocos2d::CCTMXLayer *TileLayer)
+{
+	//Collision Check Player Against other entities
+	Size s = TileLayer->getLayerSize();
+	Vec2 TilePosition = Vec2(0, 0);
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = TileLayer->getTileGIDAt(Vec2(x, y));
+				if (GID > 1)
+				{
+					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
+					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
+					{
+						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
+						TileLayer->setTileGID(1, Vec2(x, y));
 					}
 				}
 			}

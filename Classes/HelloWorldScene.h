@@ -39,8 +39,11 @@ private:
 	Character *Player;
 
 	//Tilemap
-	cocos2d::CCTMXTiledMap *map;
-	cocos2d::CCTMXLayer *collidablelayer;
+	//Level 1
+	cocos2d::CCTMXTiledMap *level1collidemap;
+	cocos2d::CCTMXLayer *level1collidelayer;
+	cocos2d::CCTMXTiledMap *level1collectmap;
+	cocos2d::CCTMXLayer *level1collectlayer;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

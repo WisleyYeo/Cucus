@@ -26,11 +26,14 @@ public:
 	Character();
 	~Character();
 	
-	void Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite,  RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite,USHORT x, USHORT y);
+	void Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite,  RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite,USHORT x, USHORT y,
+			int CharHealth, int CharStrength, int CharSpeed);
 	//Character Update
 	virtual void update(float);
 
 	void CollisionCheck(cocos2d::CCTMXLayer *TileLayer);
+	void CollectionCheck(cocos2d::CCTMXLayer *TileLayer);
+
 	SpriteManager GetCharCurrentSprite(void);
 
 	void Walk(Vec2 dir);
@@ -47,5 +50,11 @@ private:
 
 	Vec2 position;	
 	bool isMoving;
+
+	//Character Attributes
+	int Health;
+	int Strength;
+	int Speed;
+
 };
 

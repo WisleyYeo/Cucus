@@ -2,10 +2,11 @@
 #include <iostream>
 #include <vector>
 enum TILEMAPS {
-	T_TEST,
+	L1_COLLIDE,
+	L1_COLLECT,
 	T_TOTAL
 };
-static const char* const TilemapFileName[T_TOTAL] = { "Tilemaps/Test.tmx" };
+static const char* const TilemapFileName[T_TOTAL] = { "Tilemaps/Level1_Collide.tmx", "Tilemaps/Level1_Collect.tmx" };
 class Tilemap
 {
 	
