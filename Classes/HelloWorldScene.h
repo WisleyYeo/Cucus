@@ -42,8 +42,12 @@ private:
 	//Level 1
 	cocos2d::CCTMXTiledMap *level1collidemap;
 	cocos2d::CCTMXLayer *level1collidelayer;
-	cocos2d::CCTMXTiledMap *level1collectmap;
-	cocos2d::CCTMXLayer *level1collectlayer;
+	cocos2d::CCTMXTiledMap *level1health;
+	cocos2d::CCTMXLayer *level1healthlayer;
+	cocos2d::CCTMXTiledMap *level1speed;
+	cocos2d::CCTMXLayer *level1speedlayer;
+	cocos2d::CCTMXTiledMap *level1strength;
+	cocos2d::CCTMXLayer *level1strengthlayer;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

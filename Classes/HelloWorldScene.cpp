@@ -48,7 +48,7 @@ bool HelloWorld::init()
 
 	//Player Init
 	Player = new Character();
-	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2, 100, 1, 1);
+	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2, 100, 1, 20);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
 
 	//Tilemap Init
@@ -57,11 +57,21 @@ bool HelloWorld::init()
 	level1collidemap->initWithTMXFile(TilemapFileName[L1_COLLIDE]);
 	level1collidelayer = level1collidemap->layerNamed("Layer");
 	this->addChild(level1collidemap,0);
-	level1collectmap = new CCTMXTiledMap();
-	level1collectmap->initWithTMXFile(TilemapFileName[L1_COLLECT]);
-	level1collectlayer = level1collectmap->layerNamed("Layer");
-	this->addChild(level1collectmap, 0);
 
+	level1health = new CCTMXTiledMap();
+	level1health->initWithTMXFile(TilemapFileName[L1_HEALTH]);
+	level1healthlayer = level1health->layerNamed("Layer");
+	this->addChild(level1health, 0); 
+
+	level1speed = new CCTMXTiledMap();
+	level1speed->initWithTMXFile(TilemapFileName[L1_SPEED]);
+	level1speedlayer = level1speed->layerNamed("Layer");
+	this->addChild(level1speed, 0);
+
+	level1strength = new CCTMXTiledMap();
+	level1strength->initWithTMXFile(TilemapFileName[L1_STRENGTH]);
+	level1strengthlayer = level1strength->layerNamed("Layer");
+	this->addChild(level1strength, 0);
 
 	InitInputEvents();
 
@@ -96,7 +106,9 @@ void HelloWorld::update(float dt)
 {
 	Player->update(dt);
 	Player->CollisionCheck(level1collidelayer);	
-	Player->CollectionCheck(level1collectlayer);
+	Player->HealthPackCheck(level1healthlayer);
+	Player->SpeedPackCheck(level1speedlayer);
+	Player->StrengthPackCheck(level1strengthlayer);
 	
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)

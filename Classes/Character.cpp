@@ -51,28 +51,28 @@ void Character::update(float dt)
 		if (!CollidedUp)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveUpSprite);
-			Walk(Vec2(0, 1));
+			Walk(Vec2(0, 1),dt);
 		}
 		break;
 	case C_WALK_DOWN:
 		if (!CollidedDown)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveDownSprite);
-			Walk(Vec2(0, -1));
+			Walk(Vec2(0, -1),dt);
 		}
 		break;
 	case C_WALK_LEFT:
 		if (!CollidedLeft)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveLeftSprite);
-			Walk(Vec2(-1, 0));
+			Walk(Vec2(-1, 0),dt);
 		}
 		break;
 	case C_WALK_RIGHT:
 		if (!CollidedRight)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveRightSprite);
-			Walk(Vec2(1, 0));
+			Walk(Vec2(1, 0),dt);
 		}
 		break;
 	}
@@ -149,7 +149,7 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 	}
 }
 
-void Character::CollectionCheck(cocos2d::CCTMXLayer *TileLayer)
+void Character::HealthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 {
 	//Collision Check Player Against other entities
 	Size s = TileLayer->getLayerSize();
@@ -170,17 +170,76 @@ void Character::CollectionCheck(cocos2d::CCTMXLayer *TileLayer)
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
 						TileLayer->setTileGID(1, Vec2(x, y));
+						//Increase character health
+						Health += 10;
 					}
 				}
 			}
 		}
 	}
 }
-
-void Character::Walk(Vec2 dir)
+void Character::SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer)
+{
+	//Collision Check Player Against other entities
+	Size s = TileLayer->getLayerSize();
+	Vec2 TilePosition = Vec2(0, 0);
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = TileLayer->getTileGIDAt(Vec2(x, y));
+				if (GID > 1)
+				{
+					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
+					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
+					{
+						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
+						TileLayer->setTileGID(1, Vec2(x, y));
+						//Increase character health
+						Speed += 10;
+					}
+				}
+			}
+		}
+	}
+}
+void Character::StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer)
+{
+	//Collision Check Player Against other entities
+	Size s = TileLayer->getLayerSize();
+	Vec2 TilePosition = Vec2(0, 0);
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = TileLayer->getTileGIDAt(Vec2(x, y));
+				if (GID > 1)
+				{
+					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
+					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
+					{
+						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
+						TileLayer->setTileGID(1, Vec2(x, y));
+						//Increase character health
+						Strength++;
+					}
+				}
+			}
+		}
+	}
+}
+void Character::Walk(Vec2 dir, double dt)
 {
 	isMoving = true;
-	position += 2 * dir;
+	position += 2 * dir * Speed * dt;
 }
 void Character::BoolChecker()
 {

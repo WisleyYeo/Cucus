@@ -32,11 +32,14 @@ public:
 	virtual void update(float);
 
 	void CollisionCheck(cocos2d::CCTMXLayer *TileLayer);
-	void CollectionCheck(cocos2d::CCTMXLayer *TileLayer);
+	void HealthPackCheck(cocos2d::CCTMXLayer *TileLayer);
+	void SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer);
+	void StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer);
+
 
 	SpriteManager GetCharCurrentSprite(void);
 
-	void Walk(Vec2 dir);
+	void Walk(Vec2 dir, double dt);
 	void BoolChecker();
 	bool IsMoving(){ return isMoving; };
 
