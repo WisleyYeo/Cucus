@@ -162,14 +162,14 @@ void Character::HealthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 			for (int y = 0; y < s.height; ++y)
 			{
 				GID = TileLayer->getTileGIDAt(Vec2(x, y));
-				if (GID > 1)
+				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
 					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
-						TileLayer->setTileGID(1, Vec2(x, y));
+						TileLayer->setTileGID(TileLayer->getTileSet()->_firstGid, Vec2(x, y));
 						//Increase character health
 						Health += 10;
 					}
@@ -191,14 +191,14 @@ void Character::SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer)
 			for (int y = 0; y < s.height; ++y)
 			{
 				GID = TileLayer->getTileGIDAt(Vec2(x, y));
-				if (GID > 1)
+				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
 					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
-						TileLayer->setTileGID(1, Vec2(x, y));
+						TileLayer->setTileGID(TileLayer->getTileSet()->_firstGid, Vec2(x, y));
 						//Increase character health
 						Speed += 10;
 					}
@@ -220,14 +220,14 @@ void Character::StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 			for (int y = 0; y < s.height; ++y)
 			{
 				GID = TileLayer->getTileGIDAt(Vec2(x, y));
-				if (GID > 1)
+				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
 					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
-						TileLayer->setTileGID(1, Vec2(x, y));
+						TileLayer->setTileGID(TileLayer->getTileSet()->_firstGid, Vec2(x, y));
 						//Increase character health
 						Strength++;
 					}
@@ -250,4 +250,14 @@ void Character::BoolChecker()
 	{
 		isMoving = false;
 	}
+}
+
+int Character::GetHealth(){
+	return Health;
+}
+int Character::GetSpeed(){
+	return Speed;
+}
+int Character::GetStrength(){
+	return Strength;
 }

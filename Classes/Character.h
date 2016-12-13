@@ -43,6 +43,10 @@ public:
 	void BoolChecker();
 	bool IsMoving(){ return isMoving; };
 
+	int GetHealth(void);
+	int GetSpeed(void);
+	int GetStrength(void);
+
 private:
 	SpriteManager *CharacterCurrentSprite;
 	RESOURCES CharacterIdleSprite;

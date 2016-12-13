@@ -46,33 +46,65 @@ bool HelloWorld::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-	//Player Init
-	Player = new Character();
-	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, origin.x + visibleSize.width/2, origin.y + visibleSize.height/2, 100, 1, 20);
-	this->addChild(Player->GetCharCurrentSprite().getSprite(),0);
-
 	//Tilemap Init
 	//Level 1
-	level1collidemap = new CCTMXTiledMap();
-	level1collidemap->initWithTMXFile(TilemapFileName[L1_COLLIDE]);
-	level1collidelayer = level1collidemap->layerNamed("Layer");
-	this->addChild(level1collidemap,0);
+	level1stage1 = new CCTMXTiledMap();
+	level1stage1->initWithTMXFile(TilemapFileName[L1_S1]);
+	level1stage1collide = level1stage1->layerNamed("Collide");
+	level1stage1health = level1stage1->layerNamed("Health");
+	level1stage1speed = level1stage1->layerNamed("Speed");
+	level1stage1strength = level1stage1->layerNamed("Strength");
+	level1stage1charspawn = level1stage1->layerNamed("CharSpawn");
+	this->addChild(level1stage1, 0);
 
-	level1health = new CCTMXTiledMap();
-	level1health->initWithTMXFile(TilemapFileName[L1_HEALTH]);
-	level1healthlayer = level1health->layerNamed("Layer");
-	this->addChild(level1health, 0); 
+	//Player Init
+	Player = new Character();
+	Vec2 CharSpawnPos;
+	Size s = level1stage1charspawn->getLayerSize();
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = level1stage1charspawn->getTileGIDAt(Vec2(x, y));
+				if (GID > level1stage1charspawn->getTileSet()->_firstGid)
+				{
+					CharSpawnPos = level1stage1charspawn->getTileAt(Vec2(x, y))->getPosition();
+					level1stage1charspawn->setTileGID(level1stage1charspawn->getTileSet()->_firstGid, Vec2(x, y));
+				}
+			}
+		}
+	}
+	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
+	this->addChild(Player->GetCharCurrentSprite().getSprite(), 0);
 
-	level1speed = new CCTMXTiledMap();
-	level1speed->initWithTMXFile(TilemapFileName[L1_SPEED]);
-	level1speedlayer = level1speed->layerNamed("Layer");
-	this->addChild(level1speed, 0);
+	//Text Labels
+	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	HealthLabel->setPosition(Vec2(50, 5));
+	this->addChild(HealthLabel, 1);
 
-	level1strength = new CCTMXTiledMap();
-	level1strength->initWithTMXFile(TilemapFileName[L1_STRENGTH]);
-	level1strengthlayer = level1strength->layerNamed("Layer");
-	this->addChild(level1strength, 0);
+	HealthValueLabel = CCLabelTTF::create(std::to_string(Player->GetHealth()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	HealthValueLabel->setPosition(Vec2(100, 5));
+	this->addChild(HealthValueLabel, 1);
 
+	CCLabelTTF* StrengthLabel = CCLabelTTF::create("Strength: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	StrengthLabel->setPosition(Vec2(200, 5));
+	this->addChild(StrengthLabel, 1);
+
+	StrengthValueLabel = CCLabelTTF::create(std::to_string(Player->GetStrength()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	StrengthValueLabel->setPosition(Vec2(250, 5));
+	this->addChild(StrengthValueLabel, 1);
+
+	CCLabelTTF* SpeedLabel = CCLabelTTF::create("Speed: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	SpeedLabel->setPosition(Vec2(350, 5));
+	this->addChild(SpeedLabel, 1);
+
+	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	SpeedValueLabel->setPosition(Vec2(400, 5));
+	this->addChild(SpeedValueLabel, 1);
+	
 	InitInputEvents();
 
 	this->scheduleUpdate();
@@ -104,11 +136,17 @@ void HelloWorld::InitInputEvents()
 
 void HelloWorld::update(float dt)
 {
+	//Text value labels update
+	HealthValueLabel->setString(std::to_string(Player->GetHealth()));
+	StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
+	SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+
+	//Game upadte
 	Player->update(dt);
-	Player->CollisionCheck(level1collidelayer);	
-	Player->HealthPackCheck(level1healthlayer);
-	Player->SpeedPackCheck(level1speedlayer);
-	Player->StrengthPackCheck(level1strengthlayer);
+	Player->CollisionCheck(level1stage1collide);
+	Player->HealthPackCheck(level1stage1health);
+	Player->SpeedPackCheck(level1stage1speed);
+	Player->StrengthPackCheck(level1stage1strength);
 	
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
