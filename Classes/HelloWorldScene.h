@@ -5,6 +5,7 @@
 #include "SpriteManager.h"
 #include "Character.h"
 #include "Tilemap.h"
+#include "Turret.h"
 class HelloWorld : public cocos2d::Layer
 {
 public:

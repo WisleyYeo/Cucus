@@ -156,6 +156,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\RssManager.cpp" />
     <ClCompile Include="..\Classes\Tilemap.cpp" />
     <ClCompile Include="..\Classes\TouchSwipe.cpp" />
+    <ClCompile Include="..\Classes\Turret.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +171,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\RssManager.h" />
     <ClInclude Include="..\Classes\Tilemap.h" />
     <ClInclude Include="..\Classes\TouchSwipe.h" />
+    <ClInclude Include="..\Classes\Turret.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
