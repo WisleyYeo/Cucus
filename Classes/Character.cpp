@@ -27,7 +27,17 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 	CollidedLeft = false;
 	CollidedRight = false;
 
+	// init bullets
+	bulletList.clear();
+	for (int i = 0; i < 30; ++i)
+	{
+		auto bullet = Bullet::createOBJ();
+		bulletList.pushBack(bullet);
+		//this->addChild(bullet);
+	}
+
 	position = Vec2(x, y);
+	direction.setZero();
 	isMoving = false;
 
 	//Character Attributes init
@@ -42,6 +52,15 @@ void Character::update(float dt)
 	CharacterCurrentSprite->Render(position.x, position.y);
 	BoolChecker();
 
+	for (auto child : bulletList)
+	{
+		child->update(dt);
+		if (child->getActive() == false)
+		{
+			child->setPos(position);
+		}
+	}
+
 	switch (CharCurrentState)
 	{
 	case C_IDLE:
@@ -51,38 +70,55 @@ void Character::update(float dt)
 		if (!CollidedUp)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveUpSprite);
-			Walk(Vec2(0, 1),dt);
+			setDirection(Vec2(0, 1));
+			Walk(dt);
 		}
 		break;
 	case C_WALK_DOWN:
 		if (!CollidedDown)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveDownSprite);
-			Walk(Vec2(0, -1),dt);
+			setDirection(Vec2(0, -1));
+			Walk(dt);
 		}
 		break;
 	case C_WALK_LEFT:
 		if (!CollidedLeft)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveLeftSprite);
-			Walk(Vec2(-1, 0),dt);
+			setDirection(Vec2(-1, 0));
+			Walk(dt);
 		}
 		break;
 	case C_WALK_RIGHT:
 		if (!CollidedRight)
 		{
 			CharacterCurrentSprite->ChangeTexture(CharacterMoveRightSprite);
-			Walk(Vec2(1, 0),dt);
+			setDirection(Vec2(1, 0));
+			Walk(dt);
 		}
 		break;
+	case C_SHOOT:
+		Shoot();
+		CharCurrentState = C_IDLE;
 	}
 }
 SpriteManager Character::GetCharCurrentSprite(void)
 {
 	return *CharacterCurrentSprite;
 }
+
 void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 {
+	//temp bullet
+	for (auto child : bulletList)
+	{
+		if (child->getActive() == true)
+		{
+			child->CollisionCheck(TileLayer);
+		}
+	}
+
 	//Reset to false to allow movement
 	CollidedUp = false;
 	CollidedDown = false;
@@ -236,10 +272,10 @@ void Character::StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 		}
 	}
 }
-void Character::Walk(Vec2 dir, double dt)
+void Character::Walk(double dt)
 {
 	isMoving = true;
-	position += 2 * dir * Speed * dt;
+	position += 2 * direction * Speed * dt;
 }
 void Character::BoolChecker()
 {
@@ -249,6 +285,27 @@ void Character::BoolChecker()
 		CharCurrentState != C_WALK_RIGHT) 
 	{
 		isMoving = false;
+	}
+}
+
+void Character::Shoot()
+{
+	for (auto child : bulletList)
+	{
+		if (child->getActive() == false)
+		{
+			child->setActive(true);
+			child->setPos(position);
+			child->setDir(direction);
+			child->setLifeTime(3.0f);
+			//auto fadein = FadeIn::create(0.25);
+			//child->runAction(fadein);
+
+			//auto bulletbullet = CallFunc::create(child, callfunc_selector(Bullet::suicide));
+			//auto seq = Sequence::create(/*DelayTime::create(1),*/ bulletbullet, nullptr);
+			//child->runAction(seq);
+			break;
+		}
 	}
 }
 

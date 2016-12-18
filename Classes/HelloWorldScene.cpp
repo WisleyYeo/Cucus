@@ -80,6 +80,11 @@ bool HelloWorld::init()
 	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(), 0);
 
+	for (auto child : Player->getBulletList())
+	{
+		this->addChild(child);
+	}
+
 	//Text Labels
 	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	HealthLabel->setPosition(Vec2(50, 5));
@@ -182,6 +187,10 @@ void HelloWorld::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
 	{
 		Player->CharCurrentState = Character::C_WALK_RIGHT;
 	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
+	{
+		
+	}
 }
 void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
 {
@@ -189,17 +198,21 @@ void HelloWorld::keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 	{
 		Player->CharCurrentState = Character::C_IDLE;
 	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_S && Player->IsMoving())
+	else if (keyCode == EventKeyboard::KeyCode::KEY_S && Player->IsMoving())
 	{
 		Player->CharCurrentState = Character::C_IDLE;
 	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_A && Player->IsMoving())
+	else if (keyCode == EventKeyboard::KeyCode::KEY_A && Player->IsMoving())
 	{
 		Player->CharCurrentState = Character::C_IDLE;
 	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_D && Player->IsMoving())
+	else if (keyCode == EventKeyboard::KeyCode::KEY_D && Player->IsMoving())
 	{
 		Player->CharCurrentState = Character::C_IDLE;
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
+	{
+		Player->CharCurrentState = Character::C_SHOOT;
 	}
 }
 
@@ -231,7 +244,6 @@ void HelloWorld::onMouseScroll(cocos2d::Event*)
 {
 
 }
-
 
 HelloWorld::~HelloWorld()
 {
