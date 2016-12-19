@@ -64,7 +64,7 @@ void Character::update(float dt)
 	switch (CharCurrentState)
 	{
 	case C_IDLE:
-		CharacterCurrentSprite->ChangeTexture(CharacterIdleSprite);
+		//CharacterCurrentSprite->ChangeTexture(CharacterIdleSprite);
 		break;
 	case C_WALK_UP:
 		if (!CollidedUp)

@@ -13,7 +13,7 @@ Bullet* Bullet::createOBJ()
 	//creates a new object from its constructor
 	Bullet* bullet = new Bullet();
 
-	if (bullet->initWithFile("Bullets/Saw-1.png"))
+	if (bullet->initWithFile("Bullets/BananaSlice.png"))
 	{
 		//initialize the object
 		bullet->init();
@@ -80,7 +80,7 @@ void Bullet::setActive(bool active)
 
 	if (active == true)
 	{
-		this->setTexture("Bullets/Saw-1.png");
+		this->setTexture("Bullets/BananaSlice.png");
 	}
 	else
 	{

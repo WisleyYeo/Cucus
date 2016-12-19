@@ -123,7 +123,7 @@ void MainMenu::linkFb(Ref *pSender, Widget::TouchEventType type)
 
 	case ui::Widget::TouchEventType::ENDED:
 		
-		CCApplication::getInstance()->openURL("https://www.facebook.com/SakaeSushi.sg/");
+		CCApplication::getInstance()->openURL("https://www.facebook.com/FearlessAndalite?fref=ts");
 
 		break;
 	}
@@ -137,7 +137,7 @@ void MainMenu::linkInsta(Ref *pSender, Widget::TouchEventType type)
 
 	case ui::Widget::TouchEventType::ENDED:
 		
-		CCApplication::getInstance()->openURL("https://www.instagram.com/sakaesushisg/?hl=en");
+		CCApplication::getInstance()->openURL("https://www.instagram.com/rozenokeas/");
 
 		break;
 	}

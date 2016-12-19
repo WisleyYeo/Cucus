@@ -42,7 +42,7 @@ bool SplashScreen::init()
 	this->addChild(SplashBG);
 
 	//drop down obj
-	SplashOBJ = Sprite::create("Splash_Screen_Title.png");
+	SplashOBJ = Sprite::create("SplashTitle.png");
 	//set obj outside of game screen
 	SplashOBJ->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 1.5f);
 	this->addChild(SplashOBJ);
