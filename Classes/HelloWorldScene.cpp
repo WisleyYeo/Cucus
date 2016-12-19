@@ -55,6 +55,7 @@ bool HelloWorld::init()
 	level1stage1speed = level1stage1->layerNamed("Speed");
 	level1stage1strength = level1stage1->layerNamed("Strength");
 	level1stage1charspawn = level1stage1->layerNamed("CharSpawn");
+	level1stage1turretdownspawn = level1stage1->layerNamed("TurretDown");
 	this->addChild(level1stage1, 0);
 
 	//Player Init
@@ -80,6 +81,28 @@ bool HelloWorld::init()
 	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
 	this->addChild(Player->GetCharCurrentSprite().getSprite(), 0);
 
+	//Turret Down Init
+	Vec2 TurretDownPos;
+	s = level1stage1turretdownspawn->getLayerSize();
+	GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = level1stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
+				if (GID > level1stage1turretdownspawn->getTileSet()->_firstGid)
+				{
+					TurretDownPos = level1stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
+					level1stage1turretdownspawn->setTileGID(level1stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret *TurretDown = new Turret();
+					TurretDown->Init(TurretDownPos.x, TurretDownPos.y, Vec2(0, -1), 1, 100, 1);
+					TurretDownList->push_back(*TurretDown);
+				}
+			}
+		}
+	}
 	for (auto child : Player->getBulletList())
 	{
 		this->addChild(child);

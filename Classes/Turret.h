@@ -1,6 +1,7 @@
 #pragma once
 
-#include "SpriteManager.h"
+#include <iostream>
+#include "cocos2d.h"
 
 USING_NS_CC;
 class Turret
@@ -16,10 +17,9 @@ public:
 	Turret();
 	~Turret();
 
-	void Init(RESOURCES TurretSprite, USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, int TurretFirerate);
+	void Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, int TurretFirerate);
 
 private:
-	SpriteManager *TurretSprite;
 
 	Vec2 position;
 	Vec2 shootDirection;
