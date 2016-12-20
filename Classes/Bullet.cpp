@@ -13,7 +13,7 @@ Bullet* Bullet::createOBJ()
 	//creates a new object from its constructor
 	Bullet* bullet = new Bullet();
 
-	if (bullet->initWithFile("Bullets/BananaSlice.png"))
+	if (bullet->initWithFile("Bullets/0Empty.png"))
 	{
 		//initialize the object
 		bullet->init();
@@ -36,8 +36,7 @@ bool Bullet::init()
 	dir.setZero();
 	collided = false;
 	active = false;
-	//setOpacity(0);
-	//this->setTexture("Bullets/Saw-1.png");
+	bulletType = Bullet_Start;
 	this->setTexture("Bullets/0Empty.png");
 	return true;
 }
@@ -74,13 +73,18 @@ void Bullet::suicide(double dt)
 	//runAction(seq);
 }
 
-void Bullet::setActive(bool active)
+void Bullet::setActive(bool active, BulletType bulletType)
 {
 	this->active = active;
+	this->bulletType = bulletType;
 
 	if (active == true)
 	{
-		this->setTexture("Bullets/BananaSlice.png");
+		if (bulletType == Bullet_Player)
+			this->setTexture("Bullets/BananaSlice.png");
+
+		else if (bulletType == Bullet_Turret)
+			this->setTexture("Bullets/Saw-2.png");
 	}
 	else
 	{

@@ -83,6 +83,8 @@ bool HelloWorld::init()
 
 	//Turret Down Init
 	Vec2 TurretDownPos;
+	TurretDownList.clear();
+
 	s = level1stage1turretdownspawn->getLayerSize();
 	GID = 0;
 	if (s.width > 0 && s.height > 0)
@@ -92,22 +94,30 @@ bool HelloWorld::init()
 			for (int y = 0; y < s.height; ++y)
 			{
 				GID = level1stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
-				if (GID > level1stage1turretdownspawn->getTileSet()->_firstGid)
+				if (GID > 0)
 				{
 					TurretDownPos = level1stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 					level1stage1turretdownspawn->setTileGID(level1stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
-					Turret *TurretDown = new Turret();
-					TurretDown->Init(TurretDownPos.x, TurretDownPos.y, Vec2(0, -1), 1, 100, 1);
-					TurretDownList->push_back(*TurretDown);
+					Turret* TurretDown = new Turret();
+					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
+
+					//Turret bullet addchild
+					for (auto child : TurretDown->getBulletList())
+					{
+						this->addChild(child);
+					}
+					
+					TurretDownList.pushBack(TurretDown);					
 				}
 			}
 		}
 	}
+	//Player bullet addchild
 	for (auto child : Player->getBulletList())
 	{
 		this->addChild(child);
 	}
-
+	
 	//Text Labels
 	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	HealthLabel->setPosition(Vec2(50, 5));
@@ -132,7 +142,7 @@ bool HelloWorld::init()
 	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	SpeedValueLabel->setPosition(Vec2(400, 5));
 	this->addChild(SpeedValueLabel, 1);
-	
+
 	InitInputEvents();
 
 	this->scheduleUpdate();
@@ -167,7 +177,16 @@ void HelloWorld::update(float dt)
 	//Text value labels update
 	HealthValueLabel->setString(std::to_string(Player->GetHealth()));
 	StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
-	SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+	//SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+
+	//TEST TURRET SIZE
+	SpeedValueLabel->setString(std::to_string(TurretDownList.size()));
+
+	//updates all turrets
+	for (auto turrets : TurretDownList)
+	{
+		turrets->Update(dt);
+	}
 
 	//Game upadte
 	Player->update(dt);

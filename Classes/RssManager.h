@@ -10,7 +10,7 @@ enum RESOURCES {
 	R_SOLDIERRIGHT,
 	R_TOTAL
 };
-static const char* const ResourceFileName[R_TOTAL] = { "Characters/SoldierIdle.png", "Characters/SoldierUp.png", "Characters/SoldierDown.png", "Characters/SoldierLeft.png", "Characters/SoldierRight.png" };
+static const char* const ResourceFileName[R_TOTAL] = { "Characters/JaronIdle.png", "Characters/JaronUp.png", "Characters/JaronDown.png", "Characters/JaronLeft.png", "Characters/JaronRight.png" };
 class RssManager
 {
 	

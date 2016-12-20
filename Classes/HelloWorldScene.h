@@ -6,6 +6,7 @@
 #include "Character.h"
 #include "Tilemap.h"
 #include "Turret.h"
+
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -54,7 +55,7 @@ private:
 	cocos2d::CCTMXLayer *level1stage1charspawn;
 	cocos2d::CCTMXLayer *level1stage1turretdownspawn;
 
-	vector<Turret> *TurretDownList;
+	cocos2d::Vector<Turret*> TurretDownList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

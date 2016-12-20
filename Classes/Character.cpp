@@ -33,7 +33,6 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 	{
 		auto bullet = Bullet::createOBJ();
 		bulletList.pushBack(bullet);
-		//this->addChild(bullet);
 	}
 
 	position = Vec2(x, y);
@@ -52,12 +51,13 @@ void Character::update(float dt)
 	CharacterCurrentSprite->Render(position.x, position.y);
 	BoolChecker();
 
-	for (auto child : bulletList)
+	//updates all bullet
+	for (auto bullet : bulletList)
 	{
-		child->update(dt);
-		if (child->getActive() == false)
+		bullet->update(dt);
+		if (bullet->getActive() == false)
 		{
-			child->setPos(position);
+			bullet->setPos(position);
 		}
 	}
 
@@ -294,7 +294,7 @@ void Character::Shoot()
 	{
 		if (child->getActive() == false)
 		{
-			child->setActive(true);
+			child->setActive(true, Bullet::BulletType::Bullet_Player);
 			child->setPos(position);
 			child->setDir(direction);
 			child->setLifeTime(3.0f);
