@@ -59,7 +59,7 @@ bool HelloWorld::init()
 	this->addChild(level1stage1, 0);
 
 	//Player Init
-	Player = new Character();
+	Player = Character::createOBJ();
 	Vec2 CharSpawnPos;
 	Size s = level1stage1charspawn->getLayerSize();
 	unsigned int GID = 0;
@@ -78,8 +78,8 @@ bool HelloWorld::init()
 			}
 		}
 	}
-	Player->Init(R_SOLDIERIDLE, R_SOLDIERUP, R_SOLDIERDOWN, R_SOLDIERLEFT, R_SOLDIERRIGHT, CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
-	this->addChild(Player->GetCharCurrentSprite().getSprite(), 0);
+	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
+	this->addChild(Player, 0);
 
 	//Turret Down Init
 	Vec2 TurretDownPos;
@@ -104,7 +104,7 @@ bool HelloWorld::init()
 					//Turret bullet addchild
 					for (auto child : TurretDown->getBulletList())
 					{
-						this->addChild(child);
+						this->addChild(child, -1);
 					}
 					
 					TurretDownList.pushBack(TurretDown);					
@@ -115,7 +115,7 @@ bool HelloWorld::init()
 	//Player bullet addchild
 	for (auto child : Player->getBulletList())
 	{
-		this->addChild(child);
+		this->addChild(child, - 1);
 	}
 	
 	//Text Labels
@@ -177,25 +177,51 @@ void HelloWorld::update(float dt)
 	//Text value labels update
 	HealthValueLabel->setString(std::to_string(Player->GetHealth()));
 	StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
-	//SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+	SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+	updatePlayer(dt);
+	updateTurret(dt);
+}
 
-	//TEST TURRET SIZE
-	SpeedValueLabel->setString(std::to_string(TurretDownList.size()));
-
-	//updates all turrets
-	for (auto turrets : TurretDownList)
-	{
-		turrets->Update(dt);
-	}
-
-	//Game upadte
+void HelloWorld::updatePlayer(float dt)
+{
+	//Player updates
 	Player->update(dt);
 	Player->CollisionCheck(level1stage1collide);
 	Player->HealthPackCheck(level1stage1health);
 	Player->SpeedPackCheck(level1stage1speed);
 	Player->StrengthPackCheck(level1stage1strength);
-	
+
+	for (auto bullet : Player->getBulletList())
+	{
+		if (bullet->getActive() == true)
+		{
+			for (auto turrets : TurretDownList)
+			{
+				// check if damage the player
+				turrets->ReceiveDamageCheck(level1stage1turretdownspawn, bullet);
+			}
+		}
+	}
 }
+
+void HelloWorld::updateTurret(float dt)
+{
+	//Turret updates
+	for (auto turrets : TurretDownList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(level1stage1collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+}
+
+
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application

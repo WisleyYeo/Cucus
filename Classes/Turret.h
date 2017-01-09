@@ -25,7 +25,9 @@ public:
 	void Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, int TurretFirerate);
 	void Shoot(void);
 	void Update(float dt);
+	void ReceiveDamageCheck(cocos2d::CCTMXLayer *TileLayer, Bullet* bullet);
 
+	void CollisionCheck(cocos2d::CCTMXLayer *TileLayer);
 	cocos2d::Vector<Bullet*> getBulletList(){ return bulletList; };
 
 private:
@@ -41,5 +43,11 @@ private:
 	int Damage;
 	int Health;
 	int Firerate;
+
+	//turret Collision Checks
+	bool CollidedUp;
+	bool CollidedDown;
+	bool CollidedLeft;
+	bool CollidedRight;
 };
 

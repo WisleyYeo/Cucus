@@ -22,7 +22,9 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-	virtual void update(float);
+	virtual void update(float dt);
+	void updatePlayer(float dt);
+	void updateTurret(float dt);
 
 	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event *event);
 	void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event *event);

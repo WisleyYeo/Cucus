@@ -36,6 +36,7 @@ public:
 	void setLifeTime(float lifetime){ this->lifeTime = lifetime; };
 	void setBulletType(BulletType bulletType){ this->bulletType = bulletType; };
 	BulletType getBulletType(void){ return bulletType; };
+	void setCollided(bool collided){ this->collided = collided; };
 
 	void CollisionCheck(cocos2d::CCTMXLayer *TileLayer);
 

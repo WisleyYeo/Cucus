@@ -71,7 +71,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	glview->setDesignResolutionSize(designResolution.width, designResolution.height, ResolutionPolicy::EXACT_FIT);
 
 	register_all_packages();
-	auto scene = SplashScreen::createScene();
+	auto scene = HelloWorld::createScene();
 	director->runWithScene(scene);
 	return true;
 }

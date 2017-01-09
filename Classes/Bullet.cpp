@@ -65,12 +65,6 @@ void Bullet::suicide(double dt)
 	{
 		setActive(false);	
 	}
-
-	// fade away and kill yourself
-	//auto fadeout = FadeOut::create(5);
-	//auto bulletbullet = CallFunc::create(std::bind(&Bullet::setActive, this, false));
-	//auto seq = Sequence::create(fadeout, DelayTime::create(3), bulletbullet, nullptr);
-	//runAction(seq);
 }
 
 void Bullet::setActive(bool active, BulletType bulletType)

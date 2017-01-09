@@ -2,7 +2,6 @@
 
 Character::Character()
 {
-	CharacterCurrentSprite = NULL;
 	CharCurrentState = C_IDLE;
 }
 
@@ -10,18 +9,32 @@ Character::~Character()
 {
 }
 
-void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite, RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite, USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed)
+Character* Character::createOBJ()
 {
-	//Character state sprite init
-	CharacterIdleSprite = CharIdleSprite;
-	CharacterMoveUpSprite = CharMoveUpSprite;
-	CharacterMoveDownSprite = CharMoveDownSprite;
-	CharacterMoveLeftSprite = CharMoveLeftSprite;
-	CharacterMoveRightSprite = CharMoveRightSprite;
+	//creates a new object from its constructor
+	Character* character = new Character();
 
-	CharacterCurrentSprite = new SpriteManager();
-	CharacterCurrentSprite->Init(CharacterIdleSprite, x, y, true);
+	if (character->initWithFile("Characters/JaronDown.png"))
+	{
+		//initialize the object
+		character->init();
+
+		//set the object to be autorelease
+		character->autorelease();
+
+		//return the object
+		return character;
+	}
+	CC_SAFE_DELETE(character);
+	return NULL;
+};
+
+void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed)
+{
+	InitAnimFrames();
+	this->setTexture("Characters/JaronDown.png");
 	CharCurrentState = C_IDLE;
+	animTrigger = false;
 	CollidedUp = false;
 	CollidedDown = false;
 	CollidedLeft = false;
@@ -46,9 +59,27 @@ void Character::Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOU
 
 }
 
+void Character::InitAnimFrames()
+{
+	for (int i = 0; i < 9; i++)
+	{
+		auto frameUp = SpriteFrame::create("Characters/testracter.png", Rect(32 * i, 0, 32, 32)); //assume 32pix
+		WalkUpFrame.pushBack(frameUp);
+
+		auto frameLeft = SpriteFrame::create("Characters/testracter.png", Rect(32 * i, 32, 32, 32)); //assume 32pix
+		WalkLeftFrame.pushBack(frameLeft);
+
+		auto frameDown = SpriteFrame::create("Characters/testracter.png", Rect(32 * i, 64, 32, 32)); //assume 32pix
+		WalkDownFrame.pushBack(frameDown);
+
+		auto frameRight = SpriteFrame::create("Characters/testracter.png", Rect(32 * i, 96, 32, 32)); //assume 32pix
+		WalkRightFrame.pushBack(frameRight);
+	}
+}
+
 void Character::update(float dt)
 {
-	CharacterCurrentSprite->Render(position.x, position.y);
+	this->setPosition(position);
 	BoolChecker();
 
 	//updates all bullet
@@ -64,12 +95,12 @@ void Character::update(float dt)
 	switch (CharCurrentState)
 	{
 	case C_IDLE:
-		//CharacterCurrentSprite->ChangeTexture(CharacterIdleSprite);
+		PlayAnim(C_IDLE);
 		break;
 	case C_WALK_UP:
 		if (!CollidedUp)
 		{
-			CharacterCurrentSprite->ChangeTexture(CharacterMoveUpSprite);
+			PlayAnim(C_WALK_UP);
 			setDirection(Vec2(0, 1));
 			Walk(dt);
 		}
@@ -77,7 +108,7 @@ void Character::update(float dt)
 	case C_WALK_DOWN:
 		if (!CollidedDown)
 		{
-			CharacterCurrentSprite->ChangeTexture(CharacterMoveDownSprite);
+			PlayAnim(C_WALK_DOWN);
 			setDirection(Vec2(0, -1));
 			Walk(dt);
 		}
@@ -85,7 +116,7 @@ void Character::update(float dt)
 	case C_WALK_LEFT:
 		if (!CollidedLeft)
 		{
-			CharacterCurrentSprite->ChangeTexture(CharacterMoveLeftSprite);
+			PlayAnim(C_WALK_LEFT);
 			setDirection(Vec2(-1, 0));
 			Walk(dt);
 		}
@@ -93,7 +124,7 @@ void Character::update(float dt)
 	case C_WALK_RIGHT:
 		if (!CollidedRight)
 		{
-			CharacterCurrentSprite->ChangeTexture(CharacterMoveRightSprite);
+			PlayAnim(C_WALK_RIGHT);
 			setDirection(Vec2(1, 0));
 			Walk(dt);
 		}
@@ -103,9 +134,42 @@ void Character::update(float dt)
 		CharCurrentState = C_IDLE;
 	}
 }
-SpriteManager Character::GetCharCurrentSprite(void)
+
+void Character::PlayAnim(CharState state)
 {
-	return *CharacterCurrentSprite;
+	if (state == C_IDLE)
+	{
+		animTrigger = false;
+		this->stopAllActions();
+	}
+	if (state == C_WALK_UP && animTrigger == false)
+	{
+		auto animation = Animation::createWithSpriteFrames(WalkUpFrame, 0.1f);
+		auto animate = Animate::create(animation);
+		this->runAction(RepeatForever::create(animate));
+		animTrigger = true;
+	}
+	else if (state == C_WALK_DOWN && animTrigger == false)
+	{
+		auto animation = Animation::createWithSpriteFrames(WalkDownFrame, 0.1f);
+		auto animate = Animate::create(animation);
+		this->runAction(RepeatForever::create(animate));
+		animTrigger = true;
+	}
+	else if (state == C_WALK_LEFT && animTrigger == false)
+	{
+		auto animation = Animation::createWithSpriteFrames(WalkLeftFrame, 0.1f);
+		auto animate = Animate::create(animation);
+		this->runAction(RepeatForever::create(animate));
+		animTrigger = true;
+	}
+	else if (state == C_WALK_RIGHT && animTrigger == false)
+	{
+		auto animation = Animation::createWithSpriteFrames(WalkRightFrame, 0.1f);
+		auto animate = Animate::create(animation);
+		this->runAction(RepeatForever::create(animate));
+		animTrigger = true;
+	}
 }
 
 void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
@@ -139,15 +203,15 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 				{
 					
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
-					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					cocos2d::Rect CharBoundingBox = this->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						float TilePosX = TileLayer->getTileAt(Vec2(x, y))->getPositionX() + TileLayer->getTileAt(Vec2(x, y))->getContentSize().width * 0.5f;
 						float TilePosY = TileLayer->getTileAt(Vec2(x, y))->getPositionY() + TileLayer->getTileAt(Vec2(x, y))->getContentSize().height * 0.5f;
-						float CharPosX = CharacterCurrentSprite->getSprite()->getPositionX();
-						float CharPosY = CharacterCurrentSprite->getSprite()->getPositionY();
+						float CharPosX = this->getPositionX();
+						float CharPosY = this->getPositionY();
 						float TileSize = TileLayer->getTileAt(Vec2(x, y))->getContentSize().height;
-						float CharSize = CharacterCurrentSprite->getSprite()->getContentSize().height;
+						float CharSize = this->getContentSize().height;
 						float Comparison = CharSize * 0.5f + TileSize * 0.5f;
 						float offset = 5.0f;
 						float DifferenceX = abs(TilePosX - CharPosX) + offset;
@@ -185,6 +249,16 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 	}
 }
 
+void Character::ReceiveDamageCheck(Bullet* bullet)
+{
+	cocos2d::Rect CharBoundingBox = this->getBoundingBox();
+	if (bullet->getBoundingBox().intersectsRect(CharBoundingBox))
+	{
+		bullet->setCollided(true);
+		Health -= 1;
+	}
+}
+
 void Character::HealthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 {
 	//Collision Check Player Against other entities
@@ -201,7 +275,7 @@ void Character::HealthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
-					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					cocos2d::Rect CharBoundingBox = this->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
@@ -230,7 +304,7 @@ void Character::SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer)
 				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
-					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					cocos2d::Rect CharBoundingBox = this->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
@@ -259,7 +333,7 @@ void Character::StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 				if (GID > TileLayer->getTileSet()->_firstGid)
 				{
 					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
-					cocos2d::Rect CharBoundingBox = CharacterCurrentSprite->getSprite()->getBoundingBox();
+					cocos2d::Rect CharBoundingBox = this->getBoundingBox();
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
 					{
 						//Change tile to empty tile, usually tile GID 1, so only tile GID 2 onwards will be accounted for collision
@@ -298,12 +372,6 @@ void Character::Shoot()
 			child->setPos(position);
 			child->setDir(direction);
 			child->setLifeTime(3.0f);
-			//auto fadein = FadeIn::create(0.25);
-			//child->runAction(fadein);
-
-			//auto bulletbullet = CallFunc::create(child, callfunc_selector(Bullet::suicide));
-			//auto seq = Sequence::create(/*DelayTime::create(1),*/ bulletbullet, nullptr);
-			//child->runAction(seq);
 			break;
 		}
 	}

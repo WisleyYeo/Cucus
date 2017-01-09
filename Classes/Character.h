@@ -4,7 +4,7 @@
 #include <cmath>
 USING_NS_CC;
 
-class Character
+class Character : public cocos2d::Sprite
 {
 public:
 	enum CharState
@@ -21,6 +21,8 @@ public:
 	};
 	int CharCurrentState;
 	
+	static Character *createOBJ();
+
 	//Character Collision Checks
 	bool CollidedUp;
 	bool CollidedDown;
@@ -30,8 +32,11 @@ public:
 	Character();
 	~Character();
 	
-	void Init(RESOURCES CharIdleSprite, RESOURCES CharMoveUpSprite, RESOURCES CharMoveDownSprite,  RESOURCES CharMoveLeftSprite, RESOURCES CharMoveRightSprite,USHORT x, USHORT y,
-			int CharHealth, int CharStrength, int CharSpeed);
+	void Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed);
+
+	void InitAnimFrames();
+	void PlayAnim(CharState state);
+
 	//Character Update
 	virtual void update(float);
 
@@ -39,11 +44,10 @@ public:
 	void HealthPackCheck(cocos2d::CCTMXLayer *TileLayer);
 	void SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer);
 	void StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer);
+	void ReceiveDamageCheck(Bullet* bullet);
 
 	void setDirection(Vec2 dir){ this->direction = dir; };
 	void Shoot(void);
-
-	SpriteManager GetCharCurrentSprite(void);
 
 	void Walk(double dt);
 	void BoolChecker();
@@ -55,13 +59,11 @@ public:
 
 	cocos2d::Vector<Bullet*> getBulletList(){ return bulletList; };
 
+	CREATE_FUNC(Character);
+
 private:
-	SpriteManager *CharacterCurrentSprite;
-	RESOURCES CharacterIdleSprite;
-	RESOURCES CharacterMoveUpSprite;
-	RESOURCES CharacterMoveDownSprite;
-	RESOURCES CharacterMoveLeftSprite;
-	RESOURCES CharacterMoveRightSprite;
+
+	Vector<SpriteFrame*> WalkUpFrame, WalkDownFrame, WalkLeftFrame, WalkRightFrame;
 
 	// list of bullet objects
 	cocos2d::Vector<Bullet*> bulletList;
@@ -69,6 +71,7 @@ private:
 	Vec2 position;	
 	Vec2 direction;
 	bool isMoving;
+	bool animTrigger;
 
 	//Character Attributes
 	int Health;
