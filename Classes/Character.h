@@ -44,6 +44,8 @@ public:
 	void HealthPackCheck(cocos2d::CCTMXLayer *TileLayer);
 	void SpeedPackCheck(cocos2d::CCTMXLayer *TileLayer);
 	void StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer);
+	bool ExitCheck(cocos2d::CCTMXLayer *TileLayer);
+
 	void ReceiveDamageCheck(Bullet* bullet);
 
 	void setDirection(Vec2 dir){ this->direction = dir; };

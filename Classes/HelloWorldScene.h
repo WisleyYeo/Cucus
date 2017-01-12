@@ -56,8 +56,9 @@ private:
 	cocos2d::CCTMXLayer *level1stage1strength;
 	cocos2d::CCTMXLayer *level1stage1charspawn;
 	cocos2d::CCTMXLayer *level1stage1turretdownspawn;
+	cocos2d::CCTMXLayer *level1stage1exit;
 
-	cocos2d::Vector<Turret*> TurretDownList;
+	cocos2d::Vector<Turret*> level1stage1TurretDownList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

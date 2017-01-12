@@ -56,7 +56,6 @@ void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int C
 	Health = CharHealth;
 	Strength = CharStrength;
 	Speed = CharSpeed;
-
 }
 
 void Character::InitAnimFrames()
@@ -247,6 +246,41 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 			}
 		}
 	}
+}
+
+bool Character::ExitCheck(cocos2d::CCTMXLayer *TileLayer)
+{
+	//Check if player exits current stage
+	Size s = TileLayer->getLayerSize();
+	Vec2 TilePosition = Vec2(0, 0);
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = TileLayer->getTileGIDAt(Vec2(x, y));
+				if (GID > 0)
+				{
+					TilePosition = TileLayer->getTileAt(Vec2(x, y))->getPosition();
+					cocos2d::Rect CharBoundingBox = this->getBoundingBox();
+					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(CharBoundingBox))
+					{
+						//Reset to false to allow movement
+						CollidedUp = false;
+						CollidedDown = false;
+						CollidedLeft = false;
+						CollidedRight = false;
+						return true;
+					}
+					else
+						return false;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void Character::ReceiveDamageCheck(Bullet* bullet)

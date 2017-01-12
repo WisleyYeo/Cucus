@@ -56,7 +56,8 @@ bool HelloWorld::init()
 	level1stage1strength = level1stage1->layerNamed("Strength");
 	level1stage1charspawn = level1stage1->layerNamed("CharSpawn");
 	level1stage1turretdownspawn = level1stage1->layerNamed("TurretDown");
-	this->addChild(level1stage1, 0);
+	level1stage1exit = level1stage1->layerNamed("Exit");
+	this->addChild(level1stage1, 0, "Level1Stage1Map");
 
 	//Player Init
 	Player = Character::createOBJ();
@@ -78,12 +79,12 @@ bool HelloWorld::init()
 			}
 		}
 	}
-	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 20);
+	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
 	this->addChild(Player, 0);
 
 	//Turret Down Init
 	Vec2 TurretDownPos;
-	TurretDownList.clear();
+	level1stage1TurretDownList.clear();
 
 	s = level1stage1turretdownspawn->getLayerSize();
 	GID = 0;
@@ -107,7 +108,7 @@ bool HelloWorld::init()
 						this->addChild(child, -1);
 					}
 					
-					TurretDownList.pushBack(TurretDown);					
+					level1stage1TurretDownList.pushBack(TurretDown);
 				}
 			}
 		}
@@ -186,16 +187,44 @@ void HelloWorld::updatePlayer(float dt)
 {
 	//Player updates
 	Player->update(dt);
-	Player->CollisionCheck(level1stage1collide);
-	Player->HealthPackCheck(level1stage1health);
-	Player->SpeedPackCheck(level1stage1speed);
-	Player->StrengthPackCheck(level1stage1strength);
+	if (this->getChildByName("Level1Stage1Map"))
+	{
+		Player->CollisionCheck(level1stage1collide);
+		Player->HealthPackCheck(level1stage1health);
+		Player->SpeedPackCheck(level1stage1speed);
+		Player->StrengthPackCheck(level1stage1strength);
+		if (Player->ExitCheck(level1stage1exit))
+		{
+			//Remove relevant childs
+			this->removeChildByName("Level1Stage1Map");
+
+			for (auto bullet : Player->getBulletList())
+			{
+				if (bullet->getActive() == true)
+				{
+					bullet->destroy();
+				}
+			}
+			for (auto turrets : level1stage1TurretDownList)
+			{
+				for (auto bullet : turrets->getBulletList())
+				{
+					if (bullet->getActive() == true)
+					{
+						bullet->destroy();
+					}
+				}
+			}
+		}
+	}
+
+	
 
 	for (auto bullet : Player->getBulletList())
 	{
 		if (bullet->getActive() == true)
 		{
-			for (auto turrets : TurretDownList)
+			for (auto turrets : level1stage1TurretDownList)
 			{
 				// check if damage the player
 				turrets->ReceiveDamageCheck(level1stage1turretdownspawn, bullet);
@@ -207,16 +236,19 @@ void HelloWorld::updatePlayer(float dt)
 void HelloWorld::updateTurret(float dt)
 {
 	//Turret updates
-	for (auto turrets : TurretDownList)
+	if (this->getChildByName("Level1Stage1Map"))
 	{
-		turrets->Update(dt);
-		turrets->CollisionCheck(level1stage1collide);
-
-		for (auto bullet : turrets->getBulletList())
+		for (auto turrets : level1stage1TurretDownList)
 		{
-			if (bullet->getActive() == true)
-				// check if damage the player
-				Player->ReceiveDamageCheck(bullet);
+			turrets->Update(dt);
+			turrets->CollisionCheck(level1stage1collide);
+
+			for (auto bullet : turrets->getBulletList())
+			{
+				if (bullet->getActive() == true)
+					// check if damage the player
+					Player->ReceiveDamageCheck(bullet);
+			}
 		}
 	}
 }
@@ -315,9 +347,4 @@ void HelloWorld::onMouseScroll(cocos2d::Event*)
 
 HelloWorld::~HelloWorld()
 {
-	if (Player)
-	{
-		delete Player;
-		Player = NULL;
-	}
 }

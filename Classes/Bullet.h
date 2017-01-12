@@ -42,6 +42,7 @@ public:
 
 	void move(double dt);
 	void suicide(double dt);
+	void destroy();
 
 	CREATE_FUNC(Bullet);
 

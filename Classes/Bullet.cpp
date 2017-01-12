@@ -67,6 +67,11 @@ void Bullet::suicide(double dt)
 	}
 }
 
+void Bullet::destroy()
+{
+	setActive(false);
+}
+
 void Bullet::setActive(bool active, BulletType bulletType)
 {
 	this->active = active;
