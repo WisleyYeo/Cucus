@@ -85,7 +85,7 @@ void MainMenu::goToGame(Ref *pSender, Widget::TouchEventType type)
 
 		//replace the scene with the main game
 		auto scene = createScene();
-		scene = HelloWorld::createScene();
+		scene = Level1::createScene();
 
 		Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
 		break;

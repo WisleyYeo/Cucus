@@ -4,7 +4,7 @@
 #include "cocos2d.h" 
 #include "ui\CocosGUI.h"
 #include "SimpleAudioEngine.h"
-#include "HelloWorldScene.h"
+#include "Level1.h"
 
 using namespace std;
 using namespace cocos2d;

@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "Level1.h"
 #include "SplashScene.h"
 
 USING_NS_CC;
@@ -71,7 +71,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	glview->setDesignResolutionSize(designResolution.width, designResolution.height, ResolutionPolicy::EXACT_FIT);
 
 	register_all_packages();
-	auto scene = HelloWorld::createScene();
+	auto scene = Level1::createScene();
 	director->runWithScene(scene);
 	return true;
 }
