@@ -149,6 +149,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Bullet.cpp" />
     <ClCompile Include="..\Classes\Character.cpp" />
     <ClCompile Include="..\Classes\InputManager.cpp" />
+    <ClCompile Include="..\Classes\Level1.cpp" />
     <ClCompile Include="..\Classes\MainMenuScene.cpp" />
     <ClCompile Include="..\Classes\SplashScene.cpp" />
     <ClCompile Include="..\Classes\SpriteManager.cpp" />
@@ -164,6 +165,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Bullet.h" />
     <ClInclude Include="..\Classes\Character.h" />
     <ClInclude Include="..\Classes\InputManager.h" />
+    <ClInclude Include="..\Classes\Level1.h" />
     <ClInclude Include="..\Classes\MainMenuScene.h" />
     <ClInclude Include="..\Classes\SplashScene.h" />
     <ClInclude Include="..\Classes\SpriteManager.h" />
