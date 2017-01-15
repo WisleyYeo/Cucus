@@ -18,6 +18,10 @@ public:
 
     virtual bool init();
 	void InitInputEvents();
+	void InitTileMaps();
+	void InitTurrets();
+	void InitPlayer();
+	void InitText();
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
@@ -48,15 +52,9 @@ private:
 	CCLabelTTF* StrengthValueLabel;
 
 	//Tilemap
-	//Level 1
-	cocos2d::CCTMXTiledMap *level1stage1;
-	cocos2d::CCTMXLayer *level1stage1collide;
-	cocos2d::CCTMXLayer *level1stage1health;
-	cocos2d::CCTMXLayer *level1stage1speed;
-	cocos2d::CCTMXLayer *level1stage1strength;
-	cocos2d::CCTMXLayer *level1stage1charspawn;
-	cocos2d::CCTMXLayer *level1stage1turretdownspawn;
-	cocos2d::CCTMXLayer *level1stage1exit;
+	//Level 1 
+	cocos2d::CCTMXTiledMap *level1stage1, *level1stage2; 
+	cocos2d::CCTMXLayer *level1stage1collide, *level1stage1health, *level1stage1speed, *level1stage1strength, *level1stage1charspawn, *level1stage1turretdownspawn, *level1stage1exit;
 
 	cocos2d::Vector<Turret*> level1stage1TurretDownList;
 };

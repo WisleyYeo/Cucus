@@ -94,7 +94,10 @@ void Character::update(float dt)
 	switch (CharCurrentState)
 	{
 	case C_IDLE:
-		PlayAnim(C_IDLE);
+
+		animTrigger = false;
+		this->stopAllActions();
+
 		break;
 	case C_WALK_UP:
 		if (!CollidedUp)
@@ -103,6 +106,12 @@ void Character::update(float dt)
 			setDirection(Vec2(0, 1));
 			Walk(dt);
 		}
+		else
+		{
+			animTrigger = false;
+			this->stopAllActions();
+		}
+
 		break;
 	case C_WALK_DOWN:
 		if (!CollidedDown)
@@ -110,6 +119,11 @@ void Character::update(float dt)
 			PlayAnim(C_WALK_DOWN);
 			setDirection(Vec2(0, -1));
 			Walk(dt);
+		}
+		else
+		{
+			animTrigger = false;
+			this->stopAllActions();
 		}
 		break;
 	case C_WALK_LEFT:
@@ -119,6 +133,11 @@ void Character::update(float dt)
 			setDirection(Vec2(-1, 0));
 			Walk(dt);
 		}
+		else
+		{
+			animTrigger = false;
+			this->stopAllActions();
+		}
 		break;
 	case C_WALK_RIGHT:
 		if (!CollidedRight)
@@ -126,6 +145,11 @@ void Character::update(float dt)
 			PlayAnim(C_WALK_RIGHT);
 			setDirection(Vec2(1, 0));
 			Walk(dt);
+		}
+		else
+		{
+			animTrigger = false;
+			this->stopAllActions();
 		}
 		break;
 	case C_SHOOT:
@@ -136,11 +160,6 @@ void Character::update(float dt)
 
 void Character::PlayAnim(CharState state)
 {
-	if (state == C_IDLE)
-	{
-		animTrigger = false;
-		this->stopAllActions();
-	}
 	if (state == C_WALK_UP && animTrigger == false)
 	{
 		auto animation = Animation::createWithSpriteFrames(WalkUpFrame, 0.1f);
@@ -247,7 +266,6 @@ void Character::CollisionCheck(cocos2d::CCTMXLayer *TileLayer)
 		}
 	}
 }
-
 bool Character::ExitCheck(cocos2d::CCTMXLayer *TileLayer)
 {
 	//Check if player exits current stage

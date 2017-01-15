@@ -46,6 +46,19 @@ bool HelloWorld::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
+	InitTileMaps();
+	InitTurrets();
+	InitPlayer();
+	InitText();
+	InitInputEvents();
+
+	this->scheduleUpdate();
+
+    return true;
+}
+
+void HelloWorld::InitTileMaps()
+{
 	//Tilemap Init
 	//Level 1
 	level1stage1 = new CCTMXTiledMap();
@@ -58,7 +71,43 @@ bool HelloWorld::init()
 	level1stage1turretdownspawn = level1stage1->layerNamed("TurretDown");
 	level1stage1exit = level1stage1->layerNamed("Exit");
 	this->addChild(level1stage1, 0, "Level1Stage1Map");
+}
+void HelloWorld::InitTurrets()
+{
+	//Turret Down Init
+	Vec2 TurretDownPos;
+	level1stage1TurretDownList.clear();
 
+	Size s = level1stage1turretdownspawn->getLayerSize();
+	unsigned int GID = 0;
+	if (s.width > 0 && s.height > 0)
+	{
+		for (int x = 0; x < s.width; ++x)
+		{
+			for (int y = 0; y < s.height; ++y)
+			{
+				GID = level1stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
+				if (GID > 0)
+				{
+					TurretDownPos = level1stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
+					level1stage1turretdownspawn->setTileGID(level1stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretDown = new Turret();
+					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
+
+					//Turret bullet addchild
+					for (auto child : TurretDown->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					level1stage1TurretDownList.pushBack(TurretDown);
+				}
+			}
+		}
+	}
+}
+void HelloWorld::InitPlayer()
+{
 	//Player Init
 	Player = Character::createOBJ();
 	Vec2 CharSpawnPos;
@@ -82,43 +131,15 @@ bool HelloWorld::init()
 	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
 	this->addChild(Player, 0);
 
-	//Turret Down Init
-	Vec2 TurretDownPos;
-	level1stage1TurretDownList.clear();
-
-	s = level1stage1turretdownspawn->getLayerSize();
-	GID = 0;
-	if (s.width > 0 && s.height > 0)
-	{
-		for (int x = 0; x < s.width; ++x)
-		{
-			for (int y = 0; y < s.height; ++y)
-			{
-				GID = level1stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
-				if (GID > 0)
-				{
-					TurretDownPos = level1stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
-					level1stage1turretdownspawn->setTileGID(level1stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
-					Turret* TurretDown = new Turret();
-					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
-
-					//Turret bullet addchild
-					for (auto child : TurretDown->getBulletList())
-					{
-						this->addChild(child, -1);
-					}
-					
-					level1stage1TurretDownList.pushBack(TurretDown);
-				}
-			}
-		}
-	}
 	//Player bullet addchild
 	for (auto child : Player->getBulletList())
 	{
-		this->addChild(child, - 1);
+		this->addChild(child, -1);
 	}
-	
+
+}
+void HelloWorld::InitText()
+{
 	//Text Labels
 	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	HealthLabel->setPosition(Vec2(50, 5));
@@ -143,12 +164,6 @@ bool HelloWorld::init()
 	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	SpeedValueLabel->setPosition(Vec2(400, 5));
 	this->addChild(SpeedValueLabel, 1);
-
-	InitInputEvents();
-
-	this->scheduleUpdate();
-
-    return true;
 }
 
 void HelloWorld::InitInputEvents()
@@ -202,7 +217,7 @@ void HelloWorld::updatePlayer(float dt)
 			{
 				if (bullet->getActive() == true)
 				{
-					bullet->destroy();
+					bullet->setActive(false);
 				}
 			}
 			for (auto turrets : level1stage1TurretDownList)
@@ -211,7 +226,7 @@ void HelloWorld::updatePlayer(float dt)
 				{
 					if (bullet->getActive() == true)
 					{
-						bullet->destroy();
+						bullet->setActive(false);
 					}
 				}
 			}
