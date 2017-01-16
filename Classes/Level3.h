@@ -1,5 +1,5 @@
-﻿#ifndef __LEVEL1_H__
-#define __LEVEL1_H__
+﻿#ifndef __LEVEL3_H__
+#define __LEVEL3_H__
 
 #include "cocos2d.h"
 #include "SpriteManager.h"
@@ -8,13 +8,13 @@
 #include "MainMenuScene.h"
 #include "Turret.h"
 
-class Level1 : public cocos2d::Layer
+class Level3 : public cocos2d::Layer
 {
 public:
-	Level1();
-	~Level1();
+	Level3();
+	~Level3();
 
-	CREATE_FUNC(Level1);
+	CREATE_FUNC(Level3);
     static cocos2d::Scene* createScene();
 
     virtual bool init();
@@ -73,38 +73,38 @@ private:
 
 	//Tilemap
 	//Stage 1
-	cocos2d::CCTMXTiledMap *level1stage1;
-	cocos2d::CCTMXLayer *level1stage1collide;
-	cocos2d::CCTMXLayer *level1stage1health;
-	cocos2d::CCTMXLayer *level1stage1speed;
-	cocos2d::CCTMXLayer *level1stage1strength;
-	cocos2d::CCTMXLayer *level1stage1charspawn;
-	cocos2d::CCTMXLayer *level1stage1turretdownspawn;
-	cocos2d::CCTMXLayer *level1stage1exit;
+	cocos2d::CCTMXTiledMap *Level3stage1;
+	cocos2d::CCTMXLayer *Level3stage1collide;
+	cocos2d::CCTMXLayer *Level3stage1health;
+	cocos2d::CCTMXLayer *Level3stage1speed;
+	cocos2d::CCTMXLayer *Level3stage1strength;
+	cocos2d::CCTMXLayer *Level3stage1charspawn;
+	cocos2d::CCTMXLayer *Level3stage1turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage1exit;
 
 	//Stage 2
-	cocos2d::CCTMXTiledMap *level1stage2;
-	cocos2d::CCTMXLayer *level1stage2collide;
-	cocos2d::CCTMXLayer *level1stage2health;
-	cocos2d::CCTMXLayer *level1stage2speed;
-	cocos2d::CCTMXLayer *level1stage2strength;
-	cocos2d::CCTMXLayer *level1stage2charspawn;
-	cocos2d::CCTMXLayer *level1stage2turretdownspawn;
-	cocos2d::CCTMXLayer *level1stage2exit;
+	cocos2d::CCTMXTiledMap *Level3stage2;
+	cocos2d::CCTMXLayer *Level3stage2collide;
+	cocos2d::CCTMXLayer *Level3stage2health;
+	cocos2d::CCTMXLayer *Level3stage2speed;
+	cocos2d::CCTMXLayer *Level3stage2strength;
+	cocos2d::CCTMXLayer *Level3stage2charspawn;
+	cocos2d::CCTMXLayer *Level3stage2turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage2exit;
 
 	//Stage 3
-	cocos2d::CCTMXTiledMap *level1stage3;
-	cocos2d::CCTMXLayer *level1stage3collide;
-	cocos2d::CCTMXLayer *level1stage3health;
-	cocos2d::CCTMXLayer *level1stage3speed;
-	cocos2d::CCTMXLayer *level1stage3strength;
-	cocos2d::CCTMXLayer *level1stage3charspawn;
-	cocos2d::CCTMXLayer *level1stage3turretdownspawn;
-	cocos2d::CCTMXLayer *level1stage3exit;
+	cocos2d::CCTMXTiledMap *Level3stage3;
+	cocos2d::CCTMXLayer *Level3stage3collide;
+	cocos2d::CCTMXLayer *Level3stage3health;
+	cocos2d::CCTMXLayer *Level3stage3speed;
+	cocos2d::CCTMXLayer *Level3stage3strength;
+	cocos2d::CCTMXLayer *Level3stage3charspawn;
+	cocos2d::CCTMXLayer *Level3stage3turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage3exit;
 
-	cocos2d::Vector<Turret*> level1stage1TurretDownList;
-	cocos2d::Vector<Turret*> level1stage2TurretDownList;
-	cocos2d::Vector<Turret*> level1stage3TurretDownList;
+	cocos2d::Vector<Turret*> Level3stage1TurretDownList;
+	cocos2d::Vector<Turret*> Level3stage2TurretDownList;
+	cocos2d::Vector<Turret*> Level3stage3TurretDownList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

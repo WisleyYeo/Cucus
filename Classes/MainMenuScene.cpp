@@ -31,19 +31,19 @@ bool MainMenu::init()
 	this->removeAllChildren();
 
 	//Game BackGround
-	//auto mainBackground = Sprite::create("LevelSelect/LVS_Background-01.png");
-	//mainBackground->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
-	//mainBackground->setScaleX((ratio.width / mainBackground->getContentSize().width));
-	//mainBackground->setScaleY((ratio.height / mainBackground->getContentSize().height));
-	//this->addChild(touchObj.mainBackground, 0);
+	auto mainBackground = Sprite::create("model.png");
+	mainBackground->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
+	mainBackground->setScaleX((ratio.width / mainBackground->getContentSize().width));
+	mainBackground->setScaleY((ratio.height / mainBackground->getContentSize().height));
+	this->addChild(mainBackground);
 
 	//Level selection buttons init
-	Game1_Button = Button::create("Button_Start.png", "Play_Muted_Button.png");
-	Game1_Button->addTouchEventListener(CC_CALLBACK_2(MainMenu::goToGame, this));
-	Game1_Button->setPosition(Vec2(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f));
-	Game1_Button->setScale(1.25);
-	Game1_Button->setTag(1);
-	this->addChild(Game1_Button);
+	LevelSelect_Button = Button::create("Button_Start.png", "Play_Muted_Button.png");
+	LevelSelect_Button->addTouchEventListener(CC_CALLBACK_2(MainMenu::goToLevelSelect, this));
+	LevelSelect_Button->setPosition(Vec2(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f));
+	LevelSelect_Button->setScale(1.25);
+	LevelSelect_Button->setTag(1);
+	this->addChild(LevelSelect_Button);
 
 	// init border
 	auto Borders_Black = Sprite::create("Borders_Black-01.png");
@@ -72,7 +72,7 @@ bool MainMenu::init()
 	return true;
 }
 
-void MainMenu::goToGame(Ref *pSender, Widget::TouchEventType type)
+void MainMenu::goToLevelSelect(Ref *pSender, Widget::TouchEventType type)
 {
 	// when click start, detect which game
 
@@ -85,7 +85,7 @@ void MainMenu::goToGame(Ref *pSender, Widget::TouchEventType type)
 
 		//replace the scene with the main game
 		auto scene = createScene();
-		scene = Level1::createScene();
+		scene = LevelSelection::createScene();
 
 		Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
 		break;

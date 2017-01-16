@@ -4,7 +4,7 @@
 #include "cocos2d.h" 
 #include "ui\CocosGUI.h"
 #include "SimpleAudioEngine.h"
-#include "Level1.h"
+#include "LevelSelection.h"
 
 using namespace std;
 using namespace cocos2d;
@@ -20,7 +20,7 @@ public:
 	virtual bool init();
 	virtual void update(float dt);
 
-	void goToGame(Ref *pSender, Widget::TouchEventType type);
+	void goToLevelSelect(Ref *pSender, Widget::TouchEventType type);
 
 	void menuCloseCallback(Ref *pSender, Widget::TouchEventType type);
 
@@ -37,8 +37,7 @@ private:
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	Size ratio = Director::getInstance()->getWinSize();
 
-	Button* Start_Button;
-	Button* Game1_Button;
+	Button* LevelSelect_Button;
 
 	Button* Fb_Button;
 	Button* Insta_Button;
