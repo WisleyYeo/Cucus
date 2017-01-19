@@ -100,7 +100,7 @@ void Level3::InitTurrets()
 					TurretDownPos = Level3stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 					Level3stage1turretdownspawn->setTileGID(Level3stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
 					Turret* TurretDown = new Turret();
-					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
+					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
 
 					//Turret bullet addchild
 					for (auto child : TurretDown->getBulletList())
@@ -136,7 +136,7 @@ void Level3::InitPlayer()
 			}
 		}
 	}
-	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
+	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 45);
 	this->addChild(Player, 0);
 
 
@@ -201,6 +201,7 @@ void Level3::InitPause()
 	//pause button
 	pauseButton = Button::create("pauseButton.png", "pauseButtonPressed.png");
 	pauseButton->setPosition(Vec2(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f));
+	pauseButton->setScale(0.3);
 	pauseButton->addTouchEventListener(CC_CALLBACK_2(Level3::PauseGame, this));
 	this->addChild(pauseButton, 1);
 

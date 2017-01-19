@@ -22,7 +22,7 @@ public:
 	Turret();
 	~Turret();
 
-	void Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, int TurretFirerate);
+	void Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, float TurretFirerate);
 	void Shoot(void);
 	void Update(float dt);
 	void ReceiveDamageCheck(cocos2d::CCTMXLayer *TileLayer, Bullet* bullet);
@@ -42,7 +42,7 @@ private:
 
 	int Damage;
 	int Health;
-	int Firerate;
+	float Firerate;
 
 	//turret Collision Checks
 	bool CollidedUp;

@@ -35,6 +35,7 @@ public:
 	void setPos(Vec2 pos){ this->position = pos; };
 	void setLifeTime(float lifetime){ this->lifeTime = lifetime; };
 	void setBulletType(BulletType bulletType){ this->bulletType = bulletType; };
+	void setBulletSpeed(float bulletSpeed) { this->bulletSpeed = bulletSpeed; };
 	BulletType getBulletType(void){ return bulletType; };
 	void setCollided(bool collided){ this->collided = collided; };
 
@@ -53,6 +54,7 @@ private:
 	Vec2 position;
 	Vec2 dir;
 	float lifeTime;
+	float bulletSpeed;
 	BulletType bulletType;
 
 	// Setting 

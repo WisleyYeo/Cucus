@@ -14,7 +14,7 @@ Character* Character::createOBJ()
 	//creates a new object from its constructor
 	Character* character = new Character();
 
-	if (character->initWithFile("Characters/JaronDown.png"))
+	if (character->initWithFile("Characters/testIdle.png"))
 	{
 		//initialize the object
 		character->init();
@@ -32,7 +32,7 @@ Character* Character::createOBJ()
 void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed)
 {
 	InitAnimFrames();
-	this->setTexture("Characters/JaronDown.png");
+	this->setTexture("Characters/testIdle.png");
 	CharCurrentState = C_IDLE;
 	animTrigger = false;
 	CollidedUp = false;
@@ -56,6 +56,8 @@ void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int C
 	Health = CharHealth;
 	Strength = CharStrength;
 	Speed = CharSpeed;
+	firerate = 0.75;
+	shootTimer = 0;
 }
 
 void Character::InitAnimFrames()
@@ -79,6 +81,7 @@ void Character::InitAnimFrames()
 void Character::update(float dt)
 {
 	this->setPosition(position);
+	shootTimer += dt;
 	BoolChecker();
 
 	//updates all bullet
@@ -153,7 +156,12 @@ void Character::update(float dt)
 		}
 		break;
 	case C_SHOOT:
-		Shoot();
+
+		if (shootTimer >= firerate)
+		{
+			Shoot();
+			shootTimer = 0;
+		}
 		CharCurrentState = C_IDLE;
 	}
 }
@@ -307,7 +315,11 @@ void Character::ReceiveDamageCheck(Bullet* bullet)
 	if (bullet->getBoundingBox().intersectsRect(CharBoundingBox))
 	{
 		bullet->setCollided(true);
-		Health -= 1;
+
+		if (bullet->getBulletType() == bullet->Bullet_Turret)
+		{
+			Health -= 10;
+		}
 	}
 }
 
@@ -401,7 +413,7 @@ void Character::StrengthPackCheck(cocos2d::CCTMXLayer *TileLayer)
 void Character::Walk(double dt)
 {
 	isMoving = true;
-	position += 2 * direction * Speed * dt;
+	position += direction * Speed * dt;
 }
 void Character::BoolChecker()
 {
@@ -423,7 +435,8 @@ void Character::Shoot()
 			child->setActive(true, Bullet::BulletType::Bullet_Player);
 			child->setPos(position);
 			child->setDir(direction);
-			child->setLifeTime(3.0f);
+			child->setLifeTime(5.0f);
+			child->setBulletSpeed(60.0f);
 			break;
 		}
 	}

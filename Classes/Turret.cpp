@@ -11,7 +11,7 @@ Turret::~Turret()
 {
 }
 
-void Turret::Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, int TurretFirerate)
+void Turret::Init(USHORT x, USHORT y, Vec2 TurretShootDirection, int TurretDamage, int TurretHealth, float TurretFirerate)
 {
 	position.set(Vec2(x, y));
 	direction = TurretShootDirection;
@@ -153,8 +153,7 @@ void Turret::ReceiveDamageCheck(cocos2d::CCTMXLayer *TileLayer, Bullet* bullet)
 					if (TileLayer->getTileAt(Vec2(x, y))->getBoundingBox().intersectsRect(BulletBox))
 					{
 						bullet->setCollided(true);
-						//Increase character health
-						Health -= 1;
+						Health -= 20;
 					}
 				}
 			}
@@ -171,7 +170,8 @@ void Turret::Shoot()
 			child->setActive(true, Bullet::BulletType::Bullet_Turret);
 			child->setPos(position);
 			child->setDir(direction);
-			child->setLifeTime(3.0f);
+			child->setLifeTime(5.0f);
+			child->setBulletSpeed(60.0f);
 			break;
 		}
 	}

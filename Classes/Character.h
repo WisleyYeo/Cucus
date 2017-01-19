@@ -79,6 +79,8 @@ private:
 	int Health;
 	int Strength;
 	int Speed;
+	float shootTimer;
+	float firerate;
 
 };
 

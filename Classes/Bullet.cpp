@@ -32,6 +32,7 @@ Bullet* Bullet::createOBJ()
 bool Bullet::init()
 {
 	lifeTime = 0;
+	bulletSpeed = 0;
 	position.setZero();
 	dir.setZero();
 	collided = false;
@@ -54,7 +55,7 @@ void Bullet::update(float dt)
 
 void Bullet::move(double dt)
 {
-	position += 60 * dir * dt;
+	position += bulletSpeed * dir * dt;
 }
 
 void Bullet::suicide(double dt)
