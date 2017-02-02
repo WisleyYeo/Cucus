@@ -29,7 +29,7 @@ Character* Character::createOBJ()
 	return NULL;
 };
 
-void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed)
+void Character::Init(USHORT x, USHORT y)
 {
 	InitAnimFrames();
 	this->setTexture("Characters/testIdle.png");
@@ -53,10 +53,10 @@ void Character::Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int C
 	isMoving = false;
 
 	//Character Attributes init
-	Health = CharHealth;
-	Strength = CharStrength;
-	Speed = CharSpeed;
-	firerate = 0.75;
+	Health = 100;
+	Strength = 1;
+	Speed = 45;
+	firerate = 0.8;
 	shootTimer = 0;
 }
 

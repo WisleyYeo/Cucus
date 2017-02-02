@@ -32,7 +32,7 @@ public:
 	Character();
 	~Character();
 	
-	void Init(USHORT x, USHORT y, int CharHealth, int CharStrength, int CharSpeed);
+	void Init(USHORT x, USHORT y);
 
 	void InitAnimFrames();
 	void PlayAnim(CharState state);

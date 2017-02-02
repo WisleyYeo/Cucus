@@ -149,7 +149,7 @@ void Level2::InitPlayer()
 			}
 		}
 	}
-	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 45);
+	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 	this->addChild(Player, 0);
 
 
@@ -327,7 +327,7 @@ void Level2::updatePlayer(float dt)
 					}
 				}
 			}
-			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
+			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 			//Load next stage
 			this->addChild(Level2stage2, 0, "Level2Stage2Map");
 			//Turret Down Init
@@ -348,7 +348,7 @@ void Level2::updatePlayer(float dt)
 							TurretDownPos = Level2stage2turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 							Level2stage2turretdownspawn->setTileGID(Level2stage2turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
 							Turret* TurretDown = new Turret();
-							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
+							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
 
 							//Turret bullet addchild
 							for (auto child : TurretDown->getBulletList())
@@ -422,7 +422,7 @@ void Level2::updatePlayer(float dt)
 					}
 				}
 			}
-			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
+			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 
 			//Load next stage
 			this->addChild(Level2stage3, 0, "Level2Stage3Map");
@@ -444,7 +444,7 @@ void Level2::updatePlayer(float dt)
 							TurretDownPos = Level2stage3turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 							Level2stage3turretdownspawn->setTileGID(Level2stage3turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
 							Turret* TurretDown = new Turret();
-							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
+							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
 
 							//Turret bullet addchild
 							for (auto child : TurretDown->getBulletList())
@@ -481,6 +481,9 @@ void Level2::updatePlayer(float dt)
 		if (Player->ExitCheck(Level2stage3exit))
 		{
 			//Since last stage, go back to level selection
+			auto scene = createScene();
+			scene = LevelSelection::createScene();
+			Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
 		}
 	}
 }

@@ -128,7 +128,7 @@ void HelloWorld::InitPlayer()
 			}
 		}
 	}
-	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16, 100, 1, 50);
+	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 	this->addChild(Player, 0);
 
 	//Player bullet addchild
