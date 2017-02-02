@@ -15,8 +15,9 @@ Scene* Level1::createScene()
     // 'layer' is an autorelease object
     auto layer = Level1::create();
 
+	layer->setCameraMask(2, true);
     // add layer as a child to scene
-    scene->addChild(layer);
+    scene->addChild(layer, 0, "Layer");
 
     // return the scene
     return scene;
@@ -139,6 +140,13 @@ void Level1::InitPlayer()
 	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 	this->addChild(Player, 0);
 
+	auto ss = Director::getInstance()->getWinSize();
+	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+	cam->setCameraFlag(CameraFlag::USER1);
+	
+	this->addChild(cam , 1, "Camera");
 
 	//Player bullet addchild
 	for (auto child : Player->getBulletList())
@@ -249,6 +257,9 @@ void Level1::update(float dt)
 		SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
 		updatePlayer(dt);
 		updateTurret(dt);
+
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 	}
 }
 void Level1::updatePlayer(float dt)

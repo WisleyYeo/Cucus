@@ -58,6 +58,7 @@ public:
 	int GetHealth(void);
 	int GetSpeed(void);
 	int GetStrength(void);
+	Vec2 GetPosition(void);
 
 	cocos2d::Vector<Bullet*> getBulletList(){ return bulletList; };
 

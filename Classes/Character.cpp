@@ -451,3 +451,7 @@ int Character::GetSpeed(){
 int Character::GetStrength(){
 	return Strength;
 }
+Vec2 Character::GetPosition()
+{
+	return position;
+}
