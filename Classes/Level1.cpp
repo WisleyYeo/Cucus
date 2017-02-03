@@ -138,15 +138,7 @@ void Level1::InitPlayer()
 		}
 	}
 	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
-	this->addChild(Player, 0);
-
-	auto ss = Director::getInstance()->getWinSize();
-	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
-
-	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
-	cam->setCameraFlag(CameraFlag::USER1);
-	
-	this->addChild(cam , 1, "Camera");
+	this->addChild(Player, 0, "Player");
 
 	//Player bullet addchild
 	for (auto child : Player->getBulletList())
@@ -180,6 +172,16 @@ void Level1::InitText()
 	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
 	SpeedValueLabel->setPosition(Vec2(400, 5));
 	this->addChild(SpeedValueLabel, 1);
+
+
+
+	auto ss = Director::getInstance()->getWinSize();
+	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+	cam->setCameraFlag(CameraFlag::USER1);
+
+	this->addChild(cam, 1, "Camera");
 }
 void Level1::InitInputEvents()
 {
@@ -255,11 +257,9 @@ void Level1::update(float dt)
 		HealthValueLabel->setString(std::to_string(Player->GetHealth()));
 		StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
 		SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
-		updatePlayer(dt);
+		if(this->getChildByName("Player"))
+			updatePlayer(dt);
 		updateTurret(dt);
-
-		auto ss = Director::getInstance()->getWinSize();
-		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 	}
 }
 void Level1::updatePlayer(float dt)
@@ -268,6 +268,9 @@ void Level1::updatePlayer(float dt)
 	Player->update(dt);
 	if (this->getChildByName("Level1Stage1Map"))
 	{
+
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(level1stage1collide);
 		Player->HealthPackCheck(level1stage1health);
 		Player->SpeedPackCheck(level1stage1speed);
@@ -288,6 +291,8 @@ void Level1::updatePlayer(float dt)
 		{
 			//Remove relevant childs
 			this->removeChildByName("Level1Stage1Map");
+			this->removeChildByName("Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
 			for (auto bullet : Player->getBulletList())
 			{
 				if (bullet->getActive() == true)
@@ -305,7 +310,6 @@ void Level1::updatePlayer(float dt)
 					}
 				}
 			}
-
 			//Set player position 
 			Vec2 CharSpawnPos;
 			Size s = level1stage2charspawn->getLayerSize();
@@ -328,6 +332,9 @@ void Level1::updatePlayer(float dt)
 			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 			//Load next stage
 			this->addChild(level1stage2, 0, "Level1Stage2Map");
+
+			
+
 			//Turret Down Init
 			Vec2 TurretDownPos;
 			level1stage2TurretDownList.clear();
@@ -359,10 +366,20 @@ void Level1::updatePlayer(float dt)
 					}
 				}
 			}
+			auto ss = Director::getInstance()->getWinSize();
+			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+			cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+			cam->setCameraFlag(CameraFlag::USER1);
+
+			this->addChild(cam, 1, "Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
 		}
 	}
 	if (this->getChildByName("Level1Stage2Map"))
 	{
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(level1stage2collide);
 		Player->HealthPackCheck(level1stage2health);
 		Player->SpeedPackCheck(level1stage2speed);
@@ -382,6 +399,9 @@ void Level1::updatePlayer(float dt)
 		if (Player->ExitCheck(level1stage2exit))
 		{
 			//Remove relevant childs
+			this->removeChildByName("Level1Stage1Map");
+			this->removeChildByName("Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
 			this->removeChildByName("Level1Stage2Map");
 			for (auto bullet : Player->getBulletList())
 			{
@@ -455,11 +475,22 @@ void Level1::updatePlayer(float dt)
 					}
 				}
 			}
+
+			auto ss = Director::getInstance()->getWinSize();
+			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+			cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+			cam->setCameraFlag(CameraFlag::USER1);
+
+			this->addChild(cam, 1, "Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
 		}
 
 	}
 	if (this->getChildByName("Level1Stage3Map"))
 	{
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(level1stage3collide);
 		Player->HealthPackCheck(level1stage3health);
 		Player->SpeedPackCheck(level1stage3speed);
