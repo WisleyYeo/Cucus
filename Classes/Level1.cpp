@@ -34,10 +34,12 @@ bool Level1::init()
         return false;
     }
 
-	InitPause();
+	
 	InitTileMaps();
 	InitTurrets();
 	InitPlayer();
+	InitZoomedCamera();
+	InitPause();
 	InitText();
 	InitInputEvents();
 
@@ -150,38 +152,34 @@ void Level1::InitText()
 {
 	//Text Labels
 	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	HealthLabel->setPosition(Vec2(50, 5));
-	this->addChild(HealthLabel, 1);
-
+	HealthLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(HealthLabel, 2, 42);
+	
 	HealthValueLabel = CCLabelTTF::create(std::to_string(Player->GetHealth()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	HealthValueLabel->setPosition(Vec2(100, 5));
-	this->addChild(HealthValueLabel, 1);
+	HealthValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(HealthValueLabel, 1, 43);
 
 	CCLabelTTF* StrengthLabel = CCLabelTTF::create("Strength: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	StrengthLabel->setPosition(Vec2(200, 5));
-	this->addChild(StrengthLabel, 1);
+	StrengthLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(StrengthLabel, 1, 44);
 
 	StrengthValueLabel = CCLabelTTF::create(std::to_string(Player->GetStrength()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	StrengthValueLabel->setPosition(Vec2(250, 5));
-	this->addChild(StrengthValueLabel, 1);
+	StrengthValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(StrengthValueLabel, 1, 45);
 
 	CCLabelTTF* SpeedLabel = CCLabelTTF::create("Speed: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	SpeedLabel->setPosition(Vec2(350, 5));
-	this->addChild(SpeedLabel, 1);
+	SpeedLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(SpeedLabel, 1, 46);
 
 	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	SpeedValueLabel->setPosition(Vec2(400, 5));
-	this->addChild(SpeedValueLabel, 1);
+	SpeedValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(SpeedValueLabel, 1, 47);
 
-
-
-	auto ss = Director::getInstance()->getWinSize();
-	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
-
-	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
-	cam->setCameraFlag(CameraFlag::USER1);
-
-	this->addChild(cam, 1, "Camera");
+	for (int i = 42; i <= 47; i++)
+	{
+		LabelTags.push_back(i);
+	}
+	
 }
 void Level1::InitInputEvents()
 {
@@ -210,10 +208,10 @@ void Level1::InitPause()
 
 	//pause button
 	pauseButton = Button::create("pauseButton.png", "pauseButtonPressed.png");
-	pauseButton->setPosition(Vec2(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f));
 	pauseButton->setScale(0.3);
 	pauseButton->addTouchEventListener(CC_CALLBACK_2(Level1::PauseGame, this));
-	this->addChild(pauseButton, 1);
+	this->addChild(pauseButton, 1, "PauseButton");
+	pauseButton->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 
 	//pause window
 	pauseWindow = Sprite::create("windowPanel.png");
@@ -248,6 +246,16 @@ void Level1::InitPause()
 	//set pause window outside of game screen
 	pauseWindow->setPosition(origin.x + visibleSize.width * 2, origin.y + visibleSize.height * 0.5f);
 }
+void Level1::InitZoomedCamera()
+{
+	auto ss = Director::getInstance()->getWinSize();
+	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+	cam->setCameraFlag(CameraFlag::USER1);
+
+	this->addChild(cam, 1, "Camera");
+}
 
 void Level1::update(float dt)
 {
@@ -266,6 +274,7 @@ void Level1::updatePlayer(float dt)
 {
 	//Player updates
 	Player->update(dt);
+	updateHUD(dt);
 	if (this->getChildByName("Level1Stage1Map"))
 	{
 
@@ -374,6 +383,22 @@ void Level1::updatePlayer(float dt)
 
 			this->addChild(cam, 1, "Camera");
 			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
+
+			//Move Text Labels
+			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+			
+			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+			
+			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+			
+			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+			
+			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+		
+			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+		
+			//Move Pause Button
+			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 		}
 	}
 	if (this->getChildByName("Level1Stage2Map"))
@@ -484,6 +509,22 @@ void Level1::updatePlayer(float dt)
 
 			this->addChild(cam, 1, "Camera");
 			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
+			
+			//Move Text Labels
+			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			//Move Pause Button
+			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 		}
 
 	}
@@ -565,7 +606,23 @@ void Level1::updateTurret(float dt)
 		}
 	}
 }
-
+void Level1::updateHUD(float dt)
+{
+	if (Player->Moving())
+	{
+		//Move Text Labels
+		for (int i = 0; i < LabelTags.size(); i++)
+		{
+			Vec2 newPosition = this->getChildByTag(LabelTags[i])->getPosition();
+			newPosition += (Player->GetDirection() * Player->GetSpeed() * dt);
+			this->getChildByTag(LabelTags[i])->setPosition(newPosition);
+		}
+		//Move Pause Button
+		Vec2 newPosition = this->getChildByName("PauseButton")->getPosition();
+		newPosition += (Player->GetDirection() * Player->GetSpeed() * dt);
+		this->getChildByName("PauseButton")->setPosition(newPosition);
+	}
+}
 void Level1::PauseGame(Ref* pSender, Widget::TouchEventType type)
 {
 	switch (type)

@@ -455,3 +455,11 @@ Vec2 Character::GetPosition()
 {
 	return position;
 }
+Vec2 Character::GetDirection()
+{
+	return direction;
+}
+bool Character::Moving()
+{
+	return isMoving;
+}

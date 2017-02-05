@@ -59,6 +59,8 @@ public:
 	int GetSpeed(void);
 	int GetStrength(void);
 	Vec2 GetPosition(void);
+	Vec2 GetDirection(void);
+	bool Moving(void);
 
 	cocos2d::Vector<Bullet*> getBulletList(){ return bulletList; };
 

@@ -24,6 +24,7 @@ public:
 	void InitText();
 	void InitPause();
 	void InitInputEvents();
+	void InitZoomedCamera();
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
@@ -31,6 +32,7 @@ public:
 	virtual void update(float dt);
 	void updatePlayer(float dt);
 	void updateTurret(float dt);
+	void updateHUD(float dt);
 
 	//pause button callback
 	void PauseGame(Ref* pSender, Widget::TouchEventType type);
@@ -62,6 +64,7 @@ private:
 	CCLabelTTF* HealthValueLabel;
 	CCLabelTTF* SpeedValueLabel; 
 	CCLabelTTF* StrengthValueLabel;
+	vector<int> LabelTags;
 
 	//pause button and pause window
 	Button* pauseButton;
