@@ -215,7 +215,8 @@ void Level1::InitPause()
 
 	//pause window
 	pauseWindow = Sprite::create("windowPanel.png");
-	pauseWindow->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
+	pauseWindow->setScale(0.5);
+	pauseWindow->setPosition(Player->GetPosition().x * 2, Player->GetPosition().y);
 	this->addChild(pauseWindow, 2);
 
 	//resume and quit buttons
@@ -242,9 +243,6 @@ void Level1::InitPause()
 	quitButton->setPosition(Vec2(origin.x + visibleSize.width * 0.35f, origin.y + visibleSize.height * 0.3f));
 	quitButton->setScale(0.5);
 	pauseWindow->addChild(quitButton);
-
-	//set pause window outside of game screen
-	pauseWindow->setPosition(origin.x + visibleSize.width * 2, origin.y + visibleSize.height * 0.5f);
 }
 void Level1::InitZoomedCamera()
 {
@@ -508,6 +506,7 @@ void Level1::updatePlayer(float dt)
 			cam->setCameraFlag(CameraFlag::USER1);
 
 			this->addChild(cam, 1, "Camera");
+
 			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
 			
 			//Move Text Labels
@@ -632,8 +631,10 @@ void Level1::PauseGame(Ref* pSender, Widget::TouchEventType type)
 
 	case ui::Widget::TouchEventType::ENDED:
 
+		Player->CharCurrentState = Character::C_IDLE;
 		//move the pause window down
-		auto moveDown = MoveTo::create(0.5f, Vec2(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f));
+		pauseWindow->setPosition(Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
+		auto moveDown = MoveTo::create(0.5f, Vec2(Player->GetPosition().x, Player->GetPosition().y));
 		pauseWindow->runAction(EaseBackOut::create(moveDown));
 
 		//pause all in game stuff including inputs
@@ -655,7 +656,7 @@ void Level1::ResumeGame(Ref* pSender, Widget::TouchEventType type)
 	case ui::Widget::TouchEventType::ENDED:
 		
 		//move the pause window up
-		auto moveUp = MoveTo::create(0.5f, Vec2(origin.x + visibleSize.width * 2, origin.y + visibleSize.height * 0.5f));
+		auto moveUp = MoveTo::create(0.5f, Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
 		pauseWindow->runAction(EaseBackIn::create(moveUp));
 
 		//resume all in game stuff including inputs
@@ -722,18 +723,26 @@ void Level1::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event 
 	{
 		if (keyCode == EventKeyboard::KeyCode::KEY_W)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_UP;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_S)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_DOWN;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_A)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_LEFT;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_D)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_RIGHT;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)

@@ -15,22 +15,24 @@ public:
 	~Level3();
 
 	CREATE_FUNC(Level3);
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    virtual bool init();
+	virtual bool init();
 	void InitTileMaps();
 	void InitTurrets();
 	void InitPlayer();
 	void InitText();
 	void InitPause();
 	void InitInputEvents();
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
-    
+	void InitZoomedCamera();
+
+	// a selector callback
+	void menuCloseCallback(cocos2d::Ref* pSender);
+
 	virtual void update(float dt);
 	void updatePlayer(float dt);
 	void updateTurret(float dt);
+	void updateHUD(float dt);
 
 	//pause button callback
 	void PauseGame(Ref* pSender, Widget::TouchEventType type);
@@ -53,7 +55,6 @@ public:
 private:
 	//Player
 	Character *Player;
-
 	// Setting 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -61,8 +62,9 @@ private:
 
 	//Text Value Labels
 	CCLabelTTF* HealthValueLabel;
-	CCLabelTTF* SpeedValueLabel; 
+	CCLabelTTF* SpeedValueLabel;
 	CCLabelTTF* StrengthValueLabel;
+	vector<int> LabelTags;
 
 	//pause button and pause window
 	Button* pauseButton;

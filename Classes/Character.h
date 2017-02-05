@@ -35,6 +35,7 @@ public:
 	void Init(USHORT x, USHORT y);
 
 	void InitAnimFrames();
+	void SetAnimTrigger(bool animTrigger) { this->animTrigger = animTrigger; };
 	void PlayAnim(CharState state);
 
 	//Character Update

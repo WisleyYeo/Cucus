@@ -9,40 +9,43 @@ Level3::Level3()
 }
 Scene* Level3::createScene()
 {
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    auto layer = Level3::create();
+	// 'scene' is an autorelease object
+	auto scene = Scene::create();
 
-    // add layer as a child to scene
-    scene->addChild(layer);
+	// 'layer' is an autorelease object
+	auto layer = Level3::create();
 
-    // return the scene
-    return scene;
+	layer->setCameraMask(2, true);
+	// add layer as a child to scene
+	scene->addChild(layer, 0, "Layer");
+
+	// return the scene
+	return scene;
 }
 
 
 // on "init" you need to initialize your instance
 bool Level3::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
+	//////////////////////////////
+	// 1. super init first
+	if (!Layer::init())
+	{
+		return false;
+	}
 
-	InitPause();
+
 	InitTileMaps();
 	InitTurrets();
 	InitPlayer();
+	InitZoomedCamera();
+	InitPause();
 	InitText();
 	InitInputEvents();
 
 	this->scheduleUpdate();
 
-    return true;
+	return true;
 }
 
 void Level3::InitTileMaps()
@@ -50,7 +53,7 @@ void Level3::InitTileMaps()
 	//Tilemap Init
 	//Level 1
 	Level3stage1 = new CCTMXTiledMap();
-	Level3stage1->initWithTMXFile(TilemapFileName[L3_S1]);
+	Level3stage1->initWithTMXFile(TilemapFileName[L1_S1]);
 	Level3stage1collide = Level3stage1->layerNamed("Collide");
 	Level3stage1health = Level3stage1->layerNamed("Health");
 	Level3stage1speed = Level3stage1->layerNamed("Speed");
@@ -61,7 +64,7 @@ void Level3::InitTileMaps()
 	this->addChild(Level3stage1, 0, "Level3Stage1Map");
 	//Level 2
 	Level3stage2 = new CCTMXTiledMap();
-	Level3stage2->initWithTMXFile(TilemapFileName[L3_S2]);
+	Level3stage2->initWithTMXFile(TilemapFileName[L1_S2]);
 	Level3stage2collide = Level3stage2->layerNamed("Collide");
 	Level3stage2health = Level3stage2->layerNamed("Health");
 	Level3stage2speed = Level3stage2->layerNamed("Speed");
@@ -71,7 +74,7 @@ void Level3::InitTileMaps()
 	Level3stage2exit = Level3stage2->layerNamed("Exit");
 	//Level 3
 	Level3stage3 = new CCTMXTiledMap();
-	Level3stage3->initWithTMXFile(TilemapFileName[L3_S3]);
+	Level3stage3->initWithTMXFile(TilemapFileName[L1_S3]);
 	Level3stage3collide = Level3stage3->layerNamed("Collide");
 	Level3stage3health = Level3stage3->layerNamed("Health");
 	Level3stage3speed = Level3stage3->layerNamed("Speed");
@@ -137,8 +140,7 @@ void Level3::InitPlayer()
 		}
 	}
 	Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
-	this->addChild(Player, 0);
-
+	this->addChild(Player, 0, "Player");
 
 	//Player bullet addchild
 	for (auto child : Player->getBulletList())
@@ -150,28 +152,34 @@ void Level3::InitText()
 {
 	//Text Labels
 	CCLabelTTF* HealthLabel = CCLabelTTF::create("Health: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	HealthLabel->setPosition(Vec2(50, 5));
-	this->addChild(HealthLabel, 1);
+	HealthLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(HealthLabel, 2, 42);
 
 	HealthValueLabel = CCLabelTTF::create(std::to_string(Player->GetHealth()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	HealthValueLabel->setPosition(Vec2(100, 5));
-	this->addChild(HealthValueLabel, 1);
+	HealthValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(HealthValueLabel, 1, 43);
 
 	CCLabelTTF* StrengthLabel = CCLabelTTF::create("Strength: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	StrengthLabel->setPosition(Vec2(200, 5));
-	this->addChild(StrengthLabel, 1);
+	StrengthLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(StrengthLabel, 1, 44);
 
 	StrengthValueLabel = CCLabelTTF::create(std::to_string(Player->GetStrength()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	StrengthValueLabel->setPosition(Vec2(250, 5));
-	this->addChild(StrengthValueLabel, 1);
+	StrengthValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(StrengthValueLabel, 1, 45);
 
 	CCLabelTTF* SpeedLabel = CCLabelTTF::create("Speed: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	SpeedLabel->setPosition(Vec2(350, 5));
-	this->addChild(SpeedLabel, 1);
+	SpeedLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(SpeedLabel, 1, 46);
 
 	SpeedValueLabel = CCLabelTTF::create(std::to_string(Player->GetSpeed()), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
-	SpeedValueLabel->setPosition(Vec2(400, 5));
-	this->addChild(SpeedValueLabel, 1);
+	SpeedValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+	this->addChild(SpeedValueLabel, 1, 47);
+
+	for (int i = 42; i <= 47; i++)
+	{
+		LabelTags.push_back(i);
+	}
+
 }
 void Level3::InitInputEvents()
 {
@@ -200,14 +208,15 @@ void Level3::InitPause()
 
 	//pause button
 	pauseButton = Button::create("pauseButton.png", "pauseButtonPressed.png");
-	pauseButton->setPosition(Vec2(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f));
 	pauseButton->setScale(0.3);
 	pauseButton->addTouchEventListener(CC_CALLBACK_2(Level3::PauseGame, this));
-	this->addChild(pauseButton, 1);
+	this->addChild(pauseButton, 1, "PauseButton");
+	pauseButton->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 
 	//pause window
 	pauseWindow = Sprite::create("windowPanel.png");
-	pauseWindow->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
+	pauseWindow->setScale(0.5);
+	pauseWindow->setPosition(Player->GetPosition().x * 2, Player->GetPosition().y);
 	this->addChild(pauseWindow, 2);
 
 	//resume and quit buttons
@@ -234,9 +243,16 @@ void Level3::InitPause()
 	quitButton->setPosition(Vec2(origin.x + visibleSize.width * 0.35f, origin.y + visibleSize.height * 0.3f));
 	quitButton->setScale(0.5);
 	pauseWindow->addChild(quitButton);
+}
+void Level3::InitZoomedCamera()
+{
+	auto ss = Director::getInstance()->getWinSize();
+	auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
 
-	//set pause window outside of game screen
-	pauseWindow->setPosition(origin.x + visibleSize.width * 2, origin.y + visibleSize.height * 0.5f);
+	cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+	cam->setCameraFlag(CameraFlag::USER1);
+
+	this->addChild(cam, 1, "Camera");
 }
 
 void Level3::update(float dt)
@@ -247,7 +263,8 @@ void Level3::update(float dt)
 		HealthValueLabel->setString(std::to_string(Player->GetHealth()));
 		StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
 		SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
-		updatePlayer(dt);
+		if (this->getChildByName("Player"))
+			updatePlayer(dt);
 		updateTurret(dt);
 	}
 }
@@ -255,8 +272,12 @@ void Level3::updatePlayer(float dt)
 {
 	//Player updates
 	Player->update(dt);
+	updateHUD(dt);
 	if (this->getChildByName("Level3Stage1Map"))
 	{
+
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(Level3stage1collide);
 		Player->HealthPackCheck(Level3stage1health);
 		Player->SpeedPackCheck(Level3stage1speed);
@@ -277,6 +298,8 @@ void Level3::updatePlayer(float dt)
 		{
 			//Remove relevant childs
 			this->removeChildByName("Level3Stage1Map");
+			this->removeChildByName("Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
 			for (auto bullet : Player->getBulletList())
 			{
 				if (bullet->getActive() == true)
@@ -294,7 +317,6 @@ void Level3::updatePlayer(float dt)
 					}
 				}
 			}
-
 			//Set player position 
 			Vec2 CharSpawnPos;
 			Size s = Level3stage2charspawn->getLayerSize();
@@ -317,6 +339,9 @@ void Level3::updatePlayer(float dt)
 			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 			//Load next stage
 			this->addChild(Level3stage2, 0, "Level3Stage2Map");
+
+
+
 			//Turret Down Init
 			Vec2 TurretDownPos;
 			Level3stage2TurretDownList.clear();
@@ -348,10 +373,36 @@ void Level3::updatePlayer(float dt)
 					}
 				}
 			}
+			auto ss = Director::getInstance()->getWinSize();
+			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+			cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+			cam->setCameraFlag(CameraFlag::USER1);
+
+			this->addChild(cam, 1, "Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
+
+			//Move Text Labels
+			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			//Move Pause Button
+			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 		}
 	}
 	if (this->getChildByName("Level3Stage2Map"))
 	{
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(Level3stage2collide);
 		Player->HealthPackCheck(Level3stage2health);
 		Player->SpeedPackCheck(Level3stage2speed);
@@ -371,6 +422,9 @@ void Level3::updatePlayer(float dt)
 		if (Player->ExitCheck(Level3stage2exit))
 		{
 			//Remove relevant childs
+			this->removeChildByName("Level3Stage1Map");
+			this->removeChildByName("Camera");
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
 			this->removeChildByName("Level3Stage2Map");
 			for (auto bullet : Player->getBulletList())
 			{
@@ -431,7 +485,7 @@ void Level3::updatePlayer(float dt)
 							TurretDownPos = Level3stage3turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 							Level3stage3turretdownspawn->setTileGID(Level3stage3turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
 							Turret* TurretDown = new Turret();
-							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
+							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
 
 							//Turret bullet addchild
 							for (auto child : TurretDown->getBulletList())
@@ -444,11 +498,39 @@ void Level3::updatePlayer(float dt)
 					}
 				}
 			}
+
+			auto ss = Director::getInstance()->getWinSize();
+			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
+
+			cam->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
+			cam->setCameraFlag(CameraFlag::USER1);
+
+			this->addChild(cam, 1, "Camera");
+
+			this->getScene()->getChildByName("Layer")->setCameraMask(2, true);
+
+			//Move Text Labels
+			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			//Move Pause Button
+			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
 		}
 
 	}
 	if (this->getChildByName("Level3Stage3Map"))
 	{
+		auto ss = Director::getInstance()->getWinSize();
+		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(Level3stage3collide);
 		Player->HealthPackCheck(Level3stage3health);
 		Player->SpeedPackCheck(Level3stage3speed);
@@ -523,7 +605,23 @@ void Level3::updateTurret(float dt)
 		}
 	}
 }
-
+void Level3::updateHUD(float dt)
+{
+	if (Player->Moving())
+	{
+		//Move Text Labels
+		for (int i = 0; i < LabelTags.size(); i++)
+		{
+			Vec2 newPosition = this->getChildByTag(LabelTags[i])->getPosition();
+			newPosition += (Player->GetDirection() * Player->GetSpeed() * dt);
+			this->getChildByTag(LabelTags[i])->setPosition(newPosition);
+		}
+		//Move Pause Button
+		Vec2 newPosition = this->getChildByName("PauseButton")->getPosition();
+		newPosition += (Player->GetDirection() * Player->GetSpeed() * dt);
+		this->getChildByName("PauseButton")->setPosition(newPosition);
+	}
+}
 void Level3::PauseGame(Ref* pSender, Widget::TouchEventType type)
 {
 	switch (type)
@@ -533,8 +631,10 @@ void Level3::PauseGame(Ref* pSender, Widget::TouchEventType type)
 
 	case ui::Widget::TouchEventType::ENDED:
 
+		Player->CharCurrentState = Character::C_IDLE;
 		//move the pause window down
-		auto moveDown = MoveTo::create(0.5f, Vec2(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f));
+		pauseWindow->setPosition(Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
+		auto moveDown = MoveTo::create(0.5f, Vec2(Player->GetPosition().x, Player->GetPosition().y));
 		pauseWindow->runAction(EaseBackOut::create(moveDown));
 
 		//pause all in game stuff including inputs
@@ -556,7 +656,7 @@ void Level3::ResumeGame(Ref* pSender, Widget::TouchEventType type)
 	case ui::Widget::TouchEventType::ENDED:
 
 		//move the pause window up
-		auto moveUp = MoveTo::create(0.5f, Vec2(origin.x + visibleSize.width * 2, origin.y + visibleSize.height * 0.5f));
+		auto moveUp = MoveTo::create(0.5f, Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
 		pauseWindow->runAction(EaseBackIn::create(moveUp));
 
 		//resume all in game stuff including inputs
@@ -594,26 +694,27 @@ void Level3::RestartGame(Ref* pSender, Widget::TouchEventType type)
 	case ui::Widget::TouchEventType::ENDED:
 
 		//replace the scene with the main game scene
-		auto scene = Level1::createScene();
+		auto scene = Level3::createScene();
 		Director::getInstance()->replaceScene(TransitionCrossFade::create(0.5f, scene));
 
 		break;
 	}
 }
 
+
 void Level3::menuCloseCallback(Ref* pSender)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+	//Close the cocos2d-x game scene and quit the application
+	Director::getInstance()->end();
 
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
 #endif
-    
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-    
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);   
+
+	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
+
+	//EventCustom customEndEvent("game_scene_close_event");
+	//_eventDispatcher->dispatchEvent(&customEndEvent);   
 }
 
 void Level3::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
@@ -622,18 +723,26 @@ void Level3::keyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event 
 	{
 		if (keyCode == EventKeyboard::KeyCode::KEY_W)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_UP;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_S)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_DOWN;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_A)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_LEFT;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_D)
 		{
+			Player->stopAllActions();
+			Player->SetAnimTrigger(false);
 			Player->CharCurrentState = Character::C_WALK_RIGHT;
 		}
 		else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
