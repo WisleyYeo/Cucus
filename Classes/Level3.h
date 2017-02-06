@@ -19,12 +19,18 @@ public:
 
 	virtual bool init();
 	void InitTileMaps();
-	void InitTurrets();
+	void InitStage1Turrets();
+	void InitStage2Turrets();
+	void InitStage3Turrets();
 	void InitPlayer();
 	void InitText();
 	void InitPause();
 	void InitInputEvents();
 	void InitZoomedCamera();
+
+	void DestroyStage1Bullets();
+	void DestroyStage2Bullets();
+	void DestroyStage3Bullets();
 
 	// a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
@@ -32,6 +38,10 @@ public:
 	virtual void update(float dt);
 	void updatePlayer(float dt);
 	void updateTurret(float dt);
+	void updateStage1Turrets(float dt);
+	void updateStage2Turrets(float dt);
+	void updateStage3Turrets(float dt);
+
 	void updateHUD(float dt);
 
 	//pause button callback
@@ -82,6 +92,9 @@ private:
 	cocos2d::CCTMXLayer *Level3stage1strength;
 	cocos2d::CCTMXLayer *Level3stage1charspawn;
 	cocos2d::CCTMXLayer *Level3stage1turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage1turretleftspawn;
+	cocos2d::CCTMXLayer *Level3stage1turretrightspawn;
+	cocos2d::CCTMXLayer *Level3stage1turretupspawn;
 	cocos2d::CCTMXLayer *Level3stage1exit;
 
 	//Stage 2
@@ -92,6 +105,9 @@ private:
 	cocos2d::CCTMXLayer *Level3stage2strength;
 	cocos2d::CCTMXLayer *Level3stage2charspawn;
 	cocos2d::CCTMXLayer *Level3stage2turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage2turretleftspawn;
+	cocos2d::CCTMXLayer *Level3stage2turretrightspawn;
+	cocos2d::CCTMXLayer *Level3stage2turretupspawn;
 	cocos2d::CCTMXLayer *Level3stage2exit;
 
 	//Stage 3
@@ -102,11 +118,26 @@ private:
 	cocos2d::CCTMXLayer *Level3stage3strength;
 	cocos2d::CCTMXLayer *Level3stage3charspawn;
 	cocos2d::CCTMXLayer *Level3stage3turretdownspawn;
+	cocos2d::CCTMXLayer *Level3stage3turretleftspawn;
+	cocos2d::CCTMXLayer *Level3stage3turretrightspawn;
+	cocos2d::CCTMXLayer *Level3stage3turretupspawn;
 	cocos2d::CCTMXLayer *Level3stage3exit;
 
 	cocos2d::Vector<Turret*> Level3stage1TurretDownList;
 	cocos2d::Vector<Turret*> Level3stage2TurretDownList;
 	cocos2d::Vector<Turret*> Level3stage3TurretDownList;
+
+	cocos2d::Vector<Turret*> Level3stage1TurretLeftList;
+	cocos2d::Vector<Turret*> Level3stage2TurretLeftList;
+	cocos2d::Vector<Turret*> Level3stage3TurretLeftList;
+
+	cocos2d::Vector<Turret*> Level3stage1TurretRightList;
+	cocos2d::Vector<Turret*> Level3stage2TurretRightList;
+	cocos2d::Vector<Turret*> Level3stage3TurretRightList;
+
+	cocos2d::Vector<Turret*> Level3stage1TurretUpList;
+	cocos2d::Vector<Turret*> Level3stage2TurretUpList;
+	cocos2d::Vector<Turret*> Level3stage3TurretUpList;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

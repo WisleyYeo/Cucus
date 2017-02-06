@@ -36,7 +36,7 @@ bool Level3::init()
 
 
 	InitTileMaps();
-	InitTurrets();
+	InitStage1Turrets();
 	InitPlayer();
 	InitZoomedCamera();
 	InitPause();
@@ -53,52 +53,61 @@ void Level3::InitTileMaps()
 	//Tilemap Init
 	//Level 1
 	Level3stage1 = new CCTMXTiledMap();
-	Level3stage1->initWithTMXFile(TilemapFileName[L1_S1]);
+	Level3stage1->initWithTMXFile(TilemapFileName[L3_S1]);
 	Level3stage1collide = Level3stage1->layerNamed("Collide");
 	Level3stage1health = Level3stage1->layerNamed("Health");
 	Level3stage1speed = Level3stage1->layerNamed("Speed");
 	Level3stage1strength = Level3stage1->layerNamed("Strength");
 	Level3stage1charspawn = Level3stage1->layerNamed("CharSpawn");
 	Level3stage1turretdownspawn = Level3stage1->layerNamed("TurretDown");
+	Level3stage1turretleftspawn = Level3stage1->layerNamed("TurretLeft");
+	Level3stage1turretrightspawn = Level3stage1->layerNamed("TurretRight");
+	Level3stage1turretupspawn = Level3stage1->layerNamed("TurretUp");
 	Level3stage1exit = Level3stage1->layerNamed("Exit");
 	this->addChild(Level3stage1, 0, "Level3Stage1Map");
 	//Level 2
 	Level3stage2 = new CCTMXTiledMap();
-	Level3stage2->initWithTMXFile(TilemapFileName[L1_S2]);
+	Level3stage2->initWithTMXFile(TilemapFileName[L3_S2]);
 	Level3stage2collide = Level3stage2->layerNamed("Collide");
 	Level3stage2health = Level3stage2->layerNamed("Health");
 	Level3stage2speed = Level3stage2->layerNamed("Speed");
 	Level3stage2strength = Level3stage2->layerNamed("Strength");
 	Level3stage2charspawn = Level3stage2->layerNamed("CharSpawn");
 	Level3stage2turretdownspawn = Level3stage2->layerNamed("TurretDown");
+	Level3stage2turretleftspawn = Level3stage2->layerNamed("TurretLeft");
+	Level3stage2turretrightspawn = Level3stage2->layerNamed("TurretRight");
+	Level3stage2turretupspawn = Level3stage2->layerNamed("TurretUp");
 	Level3stage2exit = Level3stage2->layerNamed("Exit");
 	//Level 3
 	Level3stage3 = new CCTMXTiledMap();
-	Level3stage3->initWithTMXFile(TilemapFileName[L1_S3]);
+	Level3stage3->initWithTMXFile(TilemapFileName[L3_S3]);
 	Level3stage3collide = Level3stage3->layerNamed("Collide");
 	Level3stage3health = Level3stage3->layerNamed("Health");
 	Level3stage3speed = Level3stage3->layerNamed("Speed");
 	Level3stage3strength = Level3stage3->layerNamed("Strength");
 	Level3stage3charspawn = Level3stage3->layerNamed("CharSpawn");
 	Level3stage3turretdownspawn = Level3stage3->layerNamed("TurretDown");
+	Level3stage3turretleftspawn = Level3stage3->layerNamed("TurretLeft");
+	Level3stage3turretrightspawn = Level3stage3->layerNamed("TurretRight");
+	Level3stage3turretupspawn = Level3stage3->layerNamed("TurretUp");
 	Level3stage3exit = Level3stage3->layerNamed("Exit");
 }
-void Level3::InitTurrets()
+void Level3::InitStage1Turrets()
 {
 	//Turret Down Init
 	Vec2 TurretDownPos;
 	Level3stage1TurretDownList.clear();
 
-	Size s = Level3stage1turretdownspawn->getLayerSize();
-	unsigned int GID = 0;
-	if (s.width > 0 && s.height > 0)
+	Size s1 = Level3stage1turretdownspawn->getLayerSize();
+	unsigned int GID1 = 0;
+	if (s1.width > 0 && s1.height > 0)
 	{
-		for (int x = 0; x < s.width; ++x)
+		for (int x = 0; x < s1.width; ++x)
 		{
-			for (int y = 0; y < s.height; ++y)
+			for (int y = 0; y < s1.height; ++y)
 			{
-				GID = Level3stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
-				if (GID > 0)
+				GID1 = Level3stage1turretdownspawn->getTileGIDAt(Vec2(x, y));
+				if (GID1 > 0)
 				{
 					TurretDownPos = Level3stage1turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
 					Level3stage1turretdownspawn->setTileGID(Level3stage1turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
@@ -112,6 +121,362 @@ void Level3::InitTurrets()
 					}
 
 					Level3stage1TurretDownList.pushBack(TurretDown);
+				}
+			}
+		}
+	}
+
+	//Turret Left Init
+	Vec2 TurretLeftPos;
+	Level3stage1TurretLeftList.clear();
+
+	Size s2 = Level3stage1turretleftspawn->getLayerSize();
+	unsigned int GID2 = 0;
+	if (s2.width > 0 && s2.height > 0)
+	{
+		for (int x = 0; x < s2.width; ++x)
+		{
+			for (int y = 0; y < s2.height; ++y)
+			{
+				GID2 = Level3stage1turretleftspawn->getTileGIDAt(Vec2(x, y));
+				if (GID2 > 0)
+				{
+					TurretLeftPos = Level3stage1turretleftspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage1turretleftspawn->setTileGID(Level3stage1turretleftspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretLeft = new Turret();
+					TurretLeft->Init(TurretLeftPos.x + 16, TurretLeftPos.y + 16, Vec2(-1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : TurretLeft->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage1TurretDownList.pushBack(TurretLeft);
+				}
+			}
+		}
+	}
+
+	//Turret Right Init
+	Vec2 TurretRightPos;
+	Level3stage1TurretRightList.clear();
+
+	Size s3 = Level3stage1turretrightspawn->getLayerSize();
+	unsigned int GID3 = 0;
+	if (s3.width > 0 && s3.height > 0)
+	{
+		for (int x = 0; x < s3.width; ++x)
+		{
+			for (int y = 0; y < s3.height; ++y)
+			{
+				GID3 = Level3stage1turretrightspawn->getTileGIDAt(Vec2(x, y));
+				if (GID3 > 0)
+				{
+					TurretRightPos = Level3stage1turretrightspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage1turretrightspawn->setTileGID(Level3stage1turretrightspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretright = new Turret();
+					Turretright->Init(TurretRightPos.x + 16, TurretRightPos.y + 16, Vec2(1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretright->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage1TurretRightList.pushBack(Turretright);
+				}
+			}
+		}
+	}
+
+	//Turret Up Init
+	Vec2 TurretUpPos;
+	Level3stage1TurretUpList.clear();
+
+	Size s4 = Level3stage1turretupspawn->getLayerSize();
+	unsigned int GID4 = 0;
+	if (s4.width > 0 && s4.height > 0)
+	{
+		for (int x = 0; x < s4.width; ++x)
+		{
+			for (int y = 0; y < s4.height; ++y)
+			{
+				GID4 = Level3stage1turretupspawn->getTileGIDAt(Vec2(x, y));
+				if (GID4 > 0)
+				{
+					TurretUpPos = Level3stage1turretupspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage1turretupspawn->setTileGID(Level3stage1turretupspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretup = new Turret();
+					Turretup->Init(TurretUpPos.x + 16, TurretUpPos.y + 16, Vec2(0, 1), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretup->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage1TurretUpList.pushBack(Turretup);
+				}
+			}
+		}
+	}
+}
+void Level3::InitStage2Turrets()
+{
+	//Turret Down Init
+	Vec2 TurretDownPos;
+	Level3stage2TurretDownList.clear();
+
+	Size s1 = Level3stage2turretdownspawn->getLayerSize();
+	unsigned int GID1 = 0;
+	if (s1.width > 0 && s1.height > 0)
+	{
+		for (int x = 0; x < s1.width; ++x)
+		{
+			for (int y = 0; y < s1.height; ++y)
+			{
+				GID1 = Level3stage2turretdownspawn->getTileGIDAt(Vec2(x, y));
+				if (GID1 > 0)
+				{
+					TurretDownPos = Level3stage2turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage2turretdownspawn->setTileGID(Level3stage2turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretDown = new Turret();
+					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : TurretDown->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage2TurretDownList.pushBack(TurretDown);
+				}
+			}
+		}
+	}
+
+	//Turret Left Init
+	Vec2 TurretLeftPos;
+	Level3stage2TurretLeftList.clear();
+
+	Size s2 = Level3stage2turretleftspawn->getLayerSize();
+	unsigned int GID2 = 0;
+	if (s2.width > 0 && s2.height > 0)
+	{
+		for (int x = 0; x < s2.width; ++x)
+		{
+			for (int y = 0; y < s2.height; ++y)
+			{
+				GID2 = Level3stage2turretleftspawn->getTileGIDAt(Vec2(x, y));
+				if (GID2 > 0)
+				{
+					TurretLeftPos = Level3stage2turretleftspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage2turretleftspawn->setTileGID(Level3stage2turretleftspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretLeft = new Turret();
+					TurretLeft->Init(TurretLeftPos.x + 16, TurretLeftPos.y + 16, Vec2(-1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : TurretLeft->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage2TurretLeftList.pushBack(TurretLeft);
+				}
+			}
+		}
+	}
+
+	//Turret Right Init
+	Vec2 TurretRightPos;
+	Level3stage2TurretRightList.clear();
+
+	Size s3 = Level3stage2turretrightspawn->getLayerSize();
+	unsigned int GID3 = 0;
+	if (s3.width > 0 && s3.height > 0)
+	{
+		for (int x = 0; x < s3.width; ++x)
+		{
+			for (int y = 0; y < s3.height; ++y)
+			{
+				GID3 = Level3stage2turretrightspawn->getTileGIDAt(Vec2(x, y));
+				if (GID3 > 0)
+				{
+					TurretRightPos = Level3stage2turretrightspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage2turretrightspawn->setTileGID(Level3stage2turretrightspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretright = new Turret();
+					Turretright->Init(TurretRightPos.x + 16, TurretRightPos.y + 16, Vec2(1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretright->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage2TurretRightList.pushBack(Turretright);
+				}
+			}
+		}
+	}
+
+	//Turret Up Init
+	Vec2 TurretUpPos;
+	Level3stage2TurretUpList.clear();
+
+	Size s4 = Level3stage2turretupspawn->getLayerSize();
+	unsigned int GID4 = 0;
+	if (s4.width > 0 && s4.height > 0)
+	{
+		for (int x = 0; x < s4.width; ++x)
+		{
+			for (int y = 0; y < s4.height; ++y)
+			{
+				GID4 = Level3stage2turretupspawn->getTileGIDAt(Vec2(x, y));
+				if (GID4 > 0)
+				{
+					TurretUpPos = Level3stage2turretupspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage2turretupspawn->setTileGID(Level3stage2turretupspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretup = new Turret();
+					Turretup->Init(TurretUpPos.x + 16, TurretUpPos.y + 16, Vec2(0, 1), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretup->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage2TurretUpList.pushBack(Turretup);
+				}
+			}
+		}
+	}
+}
+void Level3::InitStage3Turrets()
+{
+	//Turret Down Init
+	Vec2 TurretDownPos;
+	Level3stage3TurretDownList.clear();
+
+	Size s1 = Level3stage3turretdownspawn->getLayerSize();
+	unsigned int GID1 = 0;
+	if (s1.width > 0 && s1.height > 0)
+	{
+		for (int x = 0; x < s1.width; ++x)
+		{
+			for (int y = 0; y < s1.height; ++y)
+			{
+				GID1 = Level3stage3turretdownspawn->getTileGIDAt(Vec2(x, y));
+				if (GID1 > 0)
+				{
+					TurretDownPos = Level3stage3turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage3turretdownspawn->setTileGID(Level3stage3turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretDown = new Turret();
+					TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : TurretDown->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage3TurretDownList.pushBack(TurretDown);
+				}
+			}
+		}
+	}
+
+	//Turret Left Init
+	Vec2 TurretLeftPos;
+	Level3stage3TurretLeftList.clear();
+
+	Size s2 = Level3stage3turretleftspawn->getLayerSize();
+	unsigned int GID2 = 0;
+	if (s2.width > 0 && s2.height > 0)
+	{
+		for (int x = 0; x < s2.width; ++x)
+		{
+			for (int y = 0; y < s2.height; ++y)
+			{
+				GID2 = Level3stage3turretleftspawn->getTileGIDAt(Vec2(x, y));
+				if (GID2 > 0)
+				{
+					TurretLeftPos = Level3stage3turretleftspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage3turretleftspawn->setTileGID(Level3stage3turretleftspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* TurretLeft = new Turret();
+					TurretLeft->Init(TurretLeftPos.x + 16, TurretLeftPos.y + 16, Vec2(-1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : TurretLeft->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage3TurretLeftList.pushBack(TurretLeft);
+				}
+			}
+		}
+	}
+
+	//Turret Right Init
+	Vec2 TurretRightPos;
+	Level3stage3TurretRightList.clear();
+
+	Size s3 = Level3stage3turretrightspawn->getLayerSize();
+	unsigned int GID3 = 0;
+	if (s3.width > 0 && s3.height > 0)
+	{
+		for (int x = 0; x < s3.width; ++x)
+		{
+			for (int y = 0; y < s3.height; ++y)
+			{
+				GID3 = Level3stage3turretrightspawn->getTileGIDAt(Vec2(x, y));
+				if (GID3 > 0)
+				{
+					TurretRightPos = Level3stage3turretrightspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage3turretrightspawn->setTileGID(Level3stage3turretrightspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretright = new Turret();
+					Turretright->Init(TurretRightPos.x + 16, TurretRightPos.y + 16, Vec2(1, 0), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretright->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage3TurretRightList.pushBack(Turretright);
+				}
+			}
+		}
+	}
+
+	//Turret Up Init
+	Vec2 TurretUpPos;
+	Level3stage3TurretUpList.clear();
+
+	Size s4 = Level3stage3turretupspawn->getLayerSize();
+	unsigned int GID4 = 0;
+	if (s4.width > 0 && s4.height > 0)
+	{
+		for (int x = 0; x < s4.width; ++x)
+		{
+			for (int y = 0; y < s4.height; ++y)
+			{
+				GID4 = Level3stage3turretupspawn->getTileGIDAt(Vec2(x, y));
+				if (GID4 > 0)
+				{
+					TurretUpPos = Level3stage3turretupspawn->getTileAt(Vec2(x, y))->getPosition();
+					Level3stage3turretupspawn->setTileGID(Level3stage3turretupspawn->getTileSet()->_firstGid, Vec2(x, y));
+					Turret* Turretup = new Turret();
+					Turretup->Init(TurretUpPos.x + 16, TurretUpPos.y + 16, Vec2(0, 1), 1, 100, 2.5);
+
+					//Turret bullet addchild
+					for (auto child : Turretup->getBulletList())
+					{
+						this->addChild(child, -1);
+					}
+
+					Level3stage3TurretUpList.pushBack(Turretup);
 				}
 			}
 		}
@@ -255,6 +620,157 @@ void Level3::InitZoomedCamera()
 	this->addChild(cam, 1, "Camera");
 }
 
+void Level3::DestroyStage1Bullets()
+{
+	for (auto bullet : Player->getBulletList())
+	{
+		if (bullet->getActive() == true)
+		{
+			bullet->destroy();
+		}
+	}
+	for (auto turrets : Level3stage1TurretDownList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage1TurretLeftList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage1TurretRightList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage1TurretUpList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+}
+void Level3::DestroyStage2Bullets()
+{
+	for (auto bullet : Player->getBulletList())
+	{
+		if (bullet->getActive() == true)
+		{
+			bullet->destroy();
+		}
+	}
+	for (auto turrets : Level3stage2TurretDownList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage2TurretLeftList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage2TurretRightList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage2TurretUpList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+}
+void Level3::DestroyStage3Bullets()
+{
+	for (auto bullet : Player->getBulletList())
+	{
+		if (bullet->getActive() == true)
+		{
+			bullet->destroy();
+		}
+	}
+	for (auto turrets : Level3stage3TurretDownList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage3TurretLeftList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage3TurretRightList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+	for (auto turrets : Level3stage3TurretUpList)
+	{
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+			{
+				bullet->destroy();
+			}
+		}
+	}
+}
+
 void Level3::update(float dt)
 {
 	if (!paused)
@@ -292,6 +808,21 @@ void Level3::updatePlayer(float dt)
 					// check if damage the player
 					turrets->ReceiveDamageCheck(Level3stage1turretdownspawn, bullet);
 				}
+				for (auto turrets : Level3stage1TurretLeftList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage1turretleftspawn, bullet);
+				}
+				for (auto turrets : Level3stage1TurretRightList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage1turretrightspawn, bullet);
+				}
+				for (auto turrets : Level3stage1TurretUpList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage1turretupspawn, bullet);
+				}
 			}
 		}
 		if (Player->ExitCheck(Level3stage1exit))
@@ -300,23 +831,9 @@ void Level3::updatePlayer(float dt)
 			this->removeChildByName("Level3Stage1Map");
 			this->removeChildByName("Camera");
 			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
-			for (auto bullet : Player->getBulletList())
-			{
-				if (bullet->getActive() == true)
-				{
-					bullet->destroy();
-				}
-			}
-			for (auto turrets : Level3stage1TurretDownList)
-			{
-				for (auto bullet : turrets->getBulletList())
-				{
-					if (bullet->getActive() == true)
-					{
-						bullet->destroy();
-					}
-				}
-			}
+
+			DestroyStage1Bullets();
+
 			//Set player position 
 			Vec2 CharSpawnPos;
 			Size s = Level3stage2charspawn->getLayerSize();
@@ -336,43 +853,13 @@ void Level3::updatePlayer(float dt)
 					}
 				}
 			}
+
 			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
 			//Load next stage
 			this->addChild(Level3stage2, 0, "Level3Stage2Map");
 
+			InitStage2Turrets();
 
-
-			//Turret Down Init
-			Vec2 TurretDownPos;
-			Level3stage2TurretDownList.clear();
-
-			s = Level3stage2turretdownspawn->getLayerSize();
-			GID = 0;
-			if (s.width > 0 && s.height > 0)
-			{
-				for (int x = 0; x < s.width; ++x)
-				{
-					for (int y = 0; y < s.height; ++y)
-					{
-						GID = Level3stage2turretdownspawn->getTileGIDAt(Vec2(x, y));
-						if (GID > 0)
-						{
-							TurretDownPos = Level3stage2turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
-							Level3stage2turretdownspawn->setTileGID(Level3stage2turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
-							Turret* TurretDown = new Turret();
-							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 2.5);
-
-							//Turret bullet addchild
-							for (auto child : TurretDown->getBulletList())
-							{
-								this->addChild(child, -1);
-							}
-
-							Level3stage2TurretDownList.pushBack(TurretDown);
-						}
-					}
-				}
-			}
 			auto ss = Director::getInstance()->getWinSize();
 			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
 
@@ -417,6 +904,21 @@ void Level3::updatePlayer(float dt)
 					// check if damage the player
 					turrets->ReceiveDamageCheck(Level3stage2turretdownspawn, bullet);
 				}
+				for (auto turrets : Level3stage2TurretLeftList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage2turretleftspawn, bullet);
+				}
+				for (auto turrets : Level3stage2TurretRightList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage2turretrightspawn, bullet);
+				}
+				for (auto turrets : Level3stage2TurretUpList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage2turretupspawn, bullet);
+				}
 			}
 		}
 		if (Player->ExitCheck(Level3stage2exit))
@@ -426,23 +928,8 @@ void Level3::updatePlayer(float dt)
 			this->removeChildByName("Camera");
 			this->getScene()->getChildByName("Layer")->setCameraMask(2, false);
 			this->removeChildByName("Level3Stage2Map");
-			for (auto bullet : Player->getBulletList())
-			{
-				if (bullet->getActive() == true)
-				{
-					bullet->destroy();
-				}
-			}
-			for (auto turrets : Level3stage2TurretDownList)
-			{
-				for (auto bullet : turrets->getBulletList())
-				{
-					if (bullet->getActive() == true)
-					{
-						bullet->destroy();
-					}
-				}
-			}
+
+			DestroyStage2Bullets();
 
 			//Set player position 
 			Vec2 CharSpawnPos;
@@ -467,37 +954,8 @@ void Level3::updatePlayer(float dt)
 
 			//Load next stage
 			this->addChild(Level3stage3, 0, "Level3Stage3Map");
-			//Turret Down Init
-			Vec2 TurretDownPos;
-			Level3stage2TurretDownList.clear();
 
-			s = Level3stage3turretdownspawn->getLayerSize();
-			GID = 0;
-			if (s.width > 0 && s.height > 0)
-			{
-				for (int x = 0; x < s.width; ++x)
-				{
-					for (int y = 0; y < s.height; ++y)
-					{
-						GID = Level3stage3turretdownspawn->getTileGIDAt(Vec2(x, y));
-						if (GID > 0)
-						{
-							TurretDownPos = Level3stage3turretdownspawn->getTileAt(Vec2(x, y))->getPosition();
-							Level3stage3turretdownspawn->setTileGID(Level3stage3turretdownspawn->getTileSet()->_firstGid, Vec2(x, y));
-							Turret* TurretDown = new Turret();
-							TurretDown->Init(TurretDownPos.x + 16, TurretDownPos.y + 16, Vec2(0, -1), 1, 100, 1);
-
-							//Turret bullet addchild
-							for (auto child : TurretDown->getBulletList())
-							{
-								this->addChild(child, -1);
-							}
-
-							Level3stage3TurretDownList.pushBack(TurretDown);
-						}
-					}
-				}
-			}
+			InitStage3Turrets();
 
 			auto ss = Director::getInstance()->getWinSize();
 			auto cam = Camera::createOrthographic(ss.width * 0.5f, ss.height * 0.5f, 1, 1000);
@@ -545,6 +1003,21 @@ void Level3::updatePlayer(float dt)
 					// check if damage the player
 					turrets->ReceiveDamageCheck(Level3stage3turretdownspawn, bullet);
 				}
+				for (auto turrets : Level3stage3TurretLeftList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage3turretleftspawn, bullet);
+				}
+				for (auto turrets : Level3stage3TurretRightList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage3turretrightspawn, bullet);
+				}
+				for (auto turrets : Level3stage3TurretUpList)
+				{
+					// check if damage the player
+					turrets->ReceiveDamageCheck(Level3stage3turretupspawn, bullet);
+				}
 			}
 		}
 		if (Player->ExitCheck(Level3stage3exit))
@@ -556,53 +1029,175 @@ void Level3::updatePlayer(float dt)
 		}
 	}
 }
+
+void Level3::updateStage1Turrets(float dt)
+{
+	for (auto turrets : Level3stage1TurretDownList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage1collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage1TurretLeftList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage1collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage1TurretRightList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage1collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage1TurretUpList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage1collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+}
+void Level3::updateStage2Turrets(float dt)
+{
+	for (auto turrets : Level3stage2TurretDownList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage2collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage2TurretLeftList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage2collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage2TurretRightList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage2collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage2TurretUpList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage2collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+}
+void Level3::updateStage3Turrets(float dt)
+{
+	for (auto turrets : Level3stage3TurretDownList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage3collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage3TurretLeftList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage3collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage3TurretRightList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage3collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+	for (auto turrets : Level3stage3TurretUpList)
+	{
+		turrets->Update(dt);
+		turrets->CollisionCheck(Level3stage3collide);
+
+		for (auto bullet : turrets->getBulletList())
+		{
+			if (bullet->getActive() == true)
+				// check if damage the player
+				Player->ReceiveDamageCheck(bullet);
+		}
+	}
+}
+
 void Level3::updateTurret(float dt)
 {
 	//Turret updates
 	if (this->getChildByName("Level3Stage1Map"))
 	{
-		for (auto turrets : Level3stage1TurretDownList)
-		{
-			turrets->Update(dt);
-			turrets->CollisionCheck(Level3stage1collide);
-
-			for (auto bullet : turrets->getBulletList())
-			{
-				if (bullet->getActive() == true)
-					// check if damage the player
-					Player->ReceiveDamageCheck(bullet);
-			}
-		}
+		updateStage1Turrets(dt);
 	}
 	if (this->getChildByName("Level3Stage2Map"))
 	{
-		for (auto turrets : Level3stage2TurretDownList)
-		{
-			turrets->Update(dt);
-			turrets->CollisionCheck(Level3stage2collide);
-
-			for (auto bullet : turrets->getBulletList())
-			{
-				if (bullet->getActive() == true)
-					// check if damage the player
-					Player->ReceiveDamageCheck(bullet);
-			}
-		}
+		updateStage2Turrets(dt);
 	}
 	if (this->getChildByName("Level3Stage3Map"))
 	{
-		for (auto turrets : Level3stage3TurretDownList)
-		{
-			turrets->Update(dt);
-			turrets->CollisionCheck(Level3stage3collide);
-
-			for (auto bullet : turrets->getBulletList())
-			{
-				if (bullet->getActive() == true)
-					// check if damage the player
-					Player->ReceiveDamageCheck(bullet);
-			}
-		}
+		updateStage3Turrets(dt);
 	}
 }
 void Level3::updateHUD(float dt)
