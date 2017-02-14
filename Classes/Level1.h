@@ -63,6 +63,11 @@ public:
 	void keyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event);
 
 private:
+
+	//GAMEPLAY STAR
+	float stageTimer;
+	int numOfStars;
+
 	//Player
 	Character *Player;
 	// Setting 
@@ -74,6 +79,8 @@ private:
 	CCLabelTTF* HealthValueLabel;
 	CCLabelTTF* SpeedValueLabel; 
 	CCLabelTTF* StrengthValueLabel;
+	CCLabelTTF* StarValueLabel;
+	CCLabelTTF* TimerValueLabel;
 	vector<int> LabelTags;
 
 	//pause button and pause window

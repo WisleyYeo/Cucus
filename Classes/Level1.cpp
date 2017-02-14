@@ -34,6 +34,8 @@ bool Level1::init()
         return false;
     }
 
+	stageTimer = 60.0f;
+	numOfStars = 0;
 	
 	InitTileMaps();
 	InitStage1Turrets();
@@ -152,7 +154,7 @@ void Level1::InitStage1Turrets()
 						this->addChild(child, -1);
 					}
 
-					level1stage1TurretDownList.pushBack(TurretLeft);
+					level1stage1TurretLeftList.pushBack(TurretLeft);
 				}
 			}
 		}
@@ -540,7 +542,24 @@ void Level1::InitText()
 	SpeedValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
 	this->addChild(SpeedValueLabel, 1, 47);
 
-	for (int i = 42; i <= 47; i++)
+	CCLabelTTF* StarLabel = CCLabelTTF::create("Stars: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	StarLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+	this->addChild(StarLabel, 1, 48);
+
+	StarValueLabel = CCLabelTTF::create(std::to_string(numOfStars), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	StarValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 275.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+	this->addChild(StarValueLabel, 1, 49);
+
+	CCLabelTTF* TimerLabel = CCLabelTTF::create("TimeLeft: ", "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	TimerLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+	this->addChild(TimerLabel, 1, 50);
+
+	int temptimer = stageTimer;
+	TimerValueLabel = CCLabelTTF::create(std::to_string(temptimer), "Fixedsys", 12, CCSizeMake(245, 32), kCCTextAlignmentCenter);
+	TimerValueLabel->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+	this->addChild(TimerValueLabel, 1, 51);
+
+	for (int i = 42; i <= 51; i++)
 	{
 		LabelTags.push_back(i);
 	}
@@ -581,7 +600,7 @@ void Level1::InitPause()
 	//pause window
 	pauseWindow = Sprite::create("windowPanel.png");
 	pauseWindow->setScale(0.5);
-	pauseWindow->setPosition(Player->GetPosition().x * 2, Player->GetPosition().y);
+	pauseWindow->setPosition(Player->GetPosition().x + 1000, Player->GetPosition().y);
 	this->addChild(pauseWindow, 2);
 
 	//resume and quit buttons
@@ -779,19 +798,26 @@ void Level1::update(float dt)
 		HealthValueLabel->setString(std::to_string(Player->GetHealth()));
 		StrengthValueLabel->setString(std::to_string(Player->GetStrength()));
 		SpeedValueLabel->setString(std::to_string(Player->GetSpeed()));
+		StarValueLabel->setString(std::to_string(numOfStars));
+		int temp = stageTimer;
+		TimerValueLabel->setString(std::to_string(temp));
+
 		if(this->getChildByName("Player"))
 			updatePlayer(dt);
+	
 		updateTurret(dt);
 	}
 }
+
 void Level1::updatePlayer(float dt)
 {
 	//Player updates
 	Player->update(dt);
+	stageTimer -= dt;
 	updateHUD(dt);
+
 	if (this->getChildByName("Level1Stage1Map"))
 	{
-
 		auto ss = Director::getInstance()->getWinSize();
 		this->getChildByName("Camera")->setPosition3D(Vec3(Player->GetPosition().x - ss.width * 0.5f * 0.5f, Player->GetPosition().y - ss.height * 0.5f * 0.5f, 800));
 		Player->CollisionCheck(level1stage1collide);
@@ -827,6 +853,12 @@ void Level1::updatePlayer(float dt)
 		}
 		if (Player->ExitCheck(level1stage1exit))
 		{
+			if (stageTimer > 0)
+			{
+				numOfStars++;
+			}
+			stageTimer = 60;
+
 			//Remove relevant childs
 			this->removeChildByName("Level1Stage1Map");
 			this->removeChildByName("Camera");
@@ -855,6 +887,12 @@ void Level1::updatePlayer(float dt)
 			}
 
 			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
+			//Player bullet addchild
+			for (auto child : Player->getBulletList())
+			{
+				this->addChild(child, -1);
+			}
+
 			//Load next stage
 			this->addChild(level1stage2, 0, "Level1Stage2Map");
 
@@ -871,16 +909,16 @@ void Level1::updatePlayer(float dt)
 
 			//Move Text Labels
 			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(48)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(49)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 275.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(50)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(51)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
 
 			//Move Pause Button
 			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
@@ -923,6 +961,12 @@ void Level1::updatePlayer(float dt)
 		}
 		if (Player->ExitCheck(level1stage2exit))
 		{
+			if (stageTimer > 0)
+			{
+				numOfStars++;
+			}
+			stageTimer = 60;
+
 			//Remove relevant childs
 			this->removeChildByName("Level1Stage1Map");
 			this->removeChildByName("Camera");
@@ -950,7 +994,13 @@ void Level1::updatePlayer(float dt)
 					}
 				}
 			}
+
 			Player->Init(CharSpawnPos.x + 16, CharSpawnPos.y + 16);
+			//Player bullet addchild
+			for (auto child : Player->getBulletList())
+			{
+				this->addChild(child, -1);
+			}
 
 			//Load next stage
 			this->addChild(level1stage3, 0, "Level1Stage3Map");
@@ -969,16 +1019,16 @@ void Level1::updatePlayer(float dt)
 			
 			//Move Text Labels
 			this->getChildByTag(42)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 50.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(43)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 100.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(44)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 200.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(45)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(46)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
-
 			this->getChildByTag(47)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f));
+
+			this->getChildByTag(48)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 250.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(49)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 275.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(50)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 350.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
+			this->getChildByTag(51)->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 400.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350));
 
 			//Move Pause Button
 			this->getChildByName("PauseButton")->setPosition(Vec2(Player->GetPosition().x - Director::getInstance()->getWinSize().width * 0.5f * 0.5f + 450.0f, Player->GetPosition().y - Director::getInstance()->getWinSize().height * 0.5f * 0.5f + 350.0f));
@@ -1022,6 +1072,12 @@ void Level1::updatePlayer(float dt)
 		}
 		if (Player->ExitCheck(level1stage3exit))
 		{
+			if (stageTimer > 0)
+			{
+				numOfStars++;
+			}
+			stageTimer = 60;
+
 			//Since last stage, go back to level selection
 			auto scene = createScene();
 			scene = LevelSelection::createScene();
@@ -1227,8 +1283,10 @@ void Level1::PauseGame(Ref* pSender, Widget::TouchEventType type)
 	case ui::Widget::TouchEventType::ENDED:
 
 		Player->CharCurrentState = Character::C_IDLE;
-		//move the pause window down
-		pauseWindow->setPosition(Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
+
+		//move the pause window out
+		pauseWindow->setPosition(Vec2(Player->GetPosition().x + 1000, Player->GetPosition().y));
+
 		auto moveDown = MoveTo::create(0.5f, Vec2(Player->GetPosition().x, Player->GetPosition().y));
 		pauseWindow->runAction(EaseBackOut::create(moveDown));
 
@@ -1251,8 +1309,8 @@ void Level1::ResumeGame(Ref* pSender, Widget::TouchEventType type)
 	case ui::Widget::TouchEventType::ENDED:
 		
 		//move the pause window up
-		auto moveUp = MoveTo::create(0.5f, Vec2(Player->GetPosition().x * 2, Player->GetPosition().y));
-		pauseWindow->runAction(EaseBackIn::create(moveUp));
+		auto moveTo = MoveTo::create(0.5f, Vec2(Player->GetPosition().x + 1000, Player->GetPosition().y));
+		pauseWindow->runAction(EaseBackIn::create(moveTo));
 
 		//resume all in game stuff including inputs
 		paused = false;
